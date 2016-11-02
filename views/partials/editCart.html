@@ -1,0 +1,208 @@
+<div class="row" ng-controller="CartController as cart">
+    <div class="col-md-6 col-sm-6 col-lg-6">
+        <div class="col-md-12 other-container">
+            <div class="round-border" style="margin-top: 0px;margin-bottom: 0px;background-color: white;min-height: 350px">
+
+
+                <div>
+                    <div style="margin-top: 15px">
+
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="{{cart.activateAirtime}}" ng-if="!cart.isBill">
+                                <a aria-controls="airtime" role="tab"
+                                   data-toggle="tab"
+                                   ng-click="home.tabClick('air')" style="font-size:16px;font-weight: bolder;cursor: pointer;">Send Airtime
+                                &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                                </a>
+                            </li>
+                            <li role="presentation" class="{{cart.activateBill}}" ng-if="!cart.isAir">
+                                <a aria-controls="bills" role="tab"
+                                   data-toggle="tab"
+                                   ng-click="cart.tabClick('bill')" style="font-size:16px;font-weight: bolder;cursor: pointer;">Pay Bills &nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                                </a>
+                            </li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane {{cart.activateAirtime}}">
+                                <br/>
+                                <form class="form-horizontal" name="airtime" ng-submit="cart.updateAirTime(cart.airtime)" style="font-size: 10px;text-align: left">
+                                    <div class="form-group">
+                                        <label for="recipient_name" class="col-sm-4 control-label">Recipient's Name :</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="recipient_name" ng-model="cart.airtime.recipient" name="recipient" placeholder="Recipient's Name" ng-required="true" ng-minlength="2">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="operator" class="col-sm-4 control-label">Mobile Network Operator :</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" id="operator" ng-model="cart.airtime.service_provider_id"  name="service_provider_id"  ng-required="true"
+                                                    ng-options="serviceProvider.id as serviceProvider.name for serviceProvider in cart.serviceProviders | filterTops:serviceProvider"
+                                            >
+                                                <option value="">Select Mobile Operator </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="recepient_phone_number" class="col-sm-4 control-label">Recipient Mobile Number
+                                            :</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="recepient_phone_number"  ng-model="cart.airtime.recipient_number" name="recipient_number"
+                                                   placeholder="Recipient Mobile Number"  ng-required="true" ng-minlength="2">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="amount" class="col-sm-4 control-label">Amount (Airtime) :</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" id="amount" name="amount"   ng-model="cart.airtime.amount"  ng-required="true"
+                                                    ng-options="amount.amount as amount.amount for amount in cart.amounts | filterTops:amount"
+                                            >
+                                                <option value="">Select Amount </option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <label for="amount" class="control-label">Free Text Message (SMS)</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <br/>
+                                            <textarea class="form-control" rows="3" name="sms"  ng-model="cart.airtime.sms" ></textarea>
+                                            <br/>
+                                            Maximum 160 Characters
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-6">
+                                            <button type="submit" class="btn btn-default">Update Airtime</button>
+                                        </div>
+                                        <div class="col-sm-6" >
+                                            <button type="button" ng-click="cart.backToCart()" class="btn btn-danger pull-right">Cancel</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div role="tabpanel" class="tab-pane {{cart.activateBill}}">
+                                <br/>
+                                <form class="form-horizontal" name="bill" ng-submit="cart.updateBills(cart.bill)" style="font-size: 10px;text-align: left">
+                                    <div class="form-group">
+                                        <label for="recepient_name_bill" class="col-sm-4 control-label">Recipient's Name :</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="recepient_name_bill"
+                                                   ng-model="cart.bill.recipient"
+                                                   ng-required="true"
+                                                   placeholder="Recipient's Name">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="recepient_phone_number_bill" class="col-sm-4 control-label">Recipient Mobile Number
+                                            :</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="recepient_phone_number_bill"
+                                                   ng-model="cart.bill.recipient_number"
+                                                   ng-required="true"
+                                                   placeholder="Recipient Mobile Number">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="service_provider" class="col-sm-4 control-label">Service Provider :</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" id="service_provider"
+                                                    ng-model="cart.bill.service_provider_id"
+                                                    ng-required="true"
+                                                    ng-options="serviceProvider.id as serviceProvider.name for serviceProvider in cart.serviceProviders | filterBills:serviceProvider"
+                                            >
+                                                <option value="">Select Service Provider </option></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="meter_account_number" class="col-sm-4 control-label">Meter or Account Number :
+                                            :</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="meter_account_number"
+                                                   ng-model="cart.bill.account_number"
+                                                   ng-required="true"
+                                                   placeholder="Meter or Account Number">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="amount_bill" class="col-sm-4 control-label">Amount (TZS):</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" id="amount_bill"
+                                                    ng-model="cart.bill.amount"
+                                                    ng-required="true"
+                                                    ng-change="cart.monitorChange(cart.bill.amount)"
+                                                    ng-options="amount.amount as amount.amount for amount in cart.amounts  | filterBills:amount"
+                                            >
+                                                <option value="">Select Amount </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" ng-if="cart.showOtherAmount">
+                                        <label for="amount_bill" class="col-sm-4 control-label"></label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="other_amount"
+                                                   ng-model="cart.bill.amount"
+                                                   ng-required="true"
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <label for="amount" class="control-label">Free Text Message (SMS)</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <br/>
+                            <textarea class="form-control"
+                                      ng-model="cart.bill.sms"
+                                      rows="3"></textarea>
+                                            <br/>
+                                            Maximum 160 Characters
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-6">
+                                            <button type="submit" class="btn btn-default">Update Bill</button>
+                                        </div>
+                                        <div class="col-sm-6" >
+                                            <button type="button" ng-click="cart.backToCart()" class="btn btn-danger pull-right">Cancel</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-lg-6">
+        <div class="col-md-12" style="border-left: solid #cccccc 1px;min-height:350px;text-align: center">
+            <br/>
+            <br/>
+            <br/>
+            <img style="height:250px;" src="img/airtime.png">
+
+        </div>
+    </div>
+</div>

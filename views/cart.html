@@ -1,0 +1,77 @@
+<div class="row" style="min-height: 350px;" ng-controller="CartController as cart">
+    <div class="col-md-12 col-sm-12 col-lg-12">
+        <p><h4 style="text-align: center;">Shopping Cart</h4></p>
+        <br/>
+        <table class="table table-responsive table-hover" datatable="ng" >
+            <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Recipient's Name</th>
+                <th>Service Provider</th>
+                <th>Account Number</th>
+                <th>Amount (TZS)</th>
+                <th>SMS</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat=" transaction in cart.transactions">
+                <td>{{transaction.id}}</td>
+                <td>{{transaction.recipient}}</td>
+                <td>{{transaction.service_provider.name}}</td>
+                <td>{{transaction.account_number}}</td>
+                <td>{{transaction.amount}}</td>
+                <td>{{transaction.sms}}</td>
+                <td align="center">
+                    <a ng-click="cart.editTransaction(transaction)" title="edit order" style="color:#BCA765;font-weight: bolder;cursor: pointer;">[Edit]</a>
+                    <a ng-click="cart.deleteTransaction(transaction)" title="delete order" style="color:#C8503D; cursor:pointer;font-weight: bolder;">[Delete]</a></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="7">
+                    <div class="row">
+                        <table style="font-size:12px;float: right;">
+                            <tbody>
+                            <tr style="background-color:white; color:black;">
+                                <td align="right" style="padding:5px;">Total Tanzanian Shillings :</td>
+                                <td align="right" style="font-weight:bold;"> TZS {{cart.totalAmountShoppend}}</td>
+                            </tr>
+                            <tr style="background-color:white; color:black;">
+                                <td align="right" style="padding:5px;">Exchange Rate:</td>
+                                <td align="right" style="font-weight:bold;">{{cart.currentExchangeRate}}</td>
+                            </tr>
+                            <tr style="background-color:white; color:black;">
+                                <td align="right" style="padding:5px;">Amount in US $ :</td>
+                                <td align="right" style="font-weight:bold;">$ {{cart.amountInUS}}</td>
+                            </tr>
+                            <tr style="background-color:white; color:black;">
+                                <td align="right" style="padding:5px;">Transaction Fee :</td>
+                                <td align="right" style="font-weight:bold;"> $ {{cart.transactionFee}}</td>
+                            </tr>
+                            <tr style="background-color:white; color:black;">
+                                <td align="right" style="padding:5px; ">TOTAL :</td>
+                                <td align="right" style="font-weight:bold; font-size:large">$
+                                    {{cart.totalAfterEverything}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a class="btn btn-default " href="#/" type="button" title="continue shopping">KEEP SHOPPING</a>
+                        </div>
+                        <div class="col-md-6">
+                            <a style="float: right;" ng-click="cart.payForOrder()" style="cursor: pointer;"  class="btn btn-success " type="button" title="paying for order">PAY
+                                FOR ORDER</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+
+        </table>
+    </div>
+</div>

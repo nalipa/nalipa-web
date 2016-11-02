@@ -1,0 +1,36 @@
+<div class="row" style="min-height: 350px;" ng-controller="CartController as cart">
+    <div class="col-md-12 col-sm-12 col-lg-12">
+        <p><h4 style="text-align: center;">My Orders</h4></p>
+        <br/>
+        <table class="table table-responsive table-hover table-bordered" datatable="ng" >
+            <thead>
+            <tr>
+                <th>Order No.</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Amount (US$)</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat=" transaction in cart.transactions | filterPendingTransactions:transaction">
+                <td>{{transaction.id}}</td>
+                <td>{{transaction.recipient}}</td>
+                <td>{{transaction.service_provider.name}}</td>
+                <td>{{transaction.account_number}}</td>
+                <td>{{transaction.amount}}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>Order No.</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Amount (US$)</th>
+                <th>Status</th>
+            </tr>
+            </tfoot>
+
+        </table>
+    </div>
+</div>

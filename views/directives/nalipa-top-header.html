@@ -1,0 +1,47 @@
+<div class="row" style="height:100px;">
+   <div class="col-md-9 col-sm-9 col-lg-9" >
+       <table >
+           <tr style="height:100px;">
+               <td>
+                   <a href="#/"><img src="img/logo.png"></a>
+               </td>
+               <td>
+                   <br/>
+                   <br/>
+                   <br/>
+                   <table>
+                       <tbody>
+                       <tr>
+                           <td valign="bottom" class="top_nav_td"><a href="#/home" >Home</a></td>
+                           <td valign="bottom" class="top_nav_td"><a href="#/how-it-works" >How It Works</a></td>
+                           <td valign="bottom" class="top_nav_td"><a href="#/cart" >Cart</a></td>
+                           <td valign="bottom" class="top_nav_td"><a href="#/orders" >Orders</a></td>
+                           <td valign="bottom" class="top_nav_td"><a href="#/faqs" >FAQs</a></td>
+                           <td valign="bottom" class="top_nav_td"><a href="#/contacts" >Contact Us</a></td>
+                           <td valign="bottom" class="top_nav_td"><a href="#/settings" >Settings</a></td>
+                       </tr>
+                       </tbody>
+                   </table>
+               </td>
+           </tr>
+       </table>
+
+   </div>
+   <div class="col-md-3 col-sm-3 col-lg-3">
+       <div class="row" id="userIdentification">
+           <span ng-if="!hideLogin" id="loginOrIdentifier"><a href="#/login">LOG IN</a></span>
+           <span ng-if="hideLogin" style="font-weight:bolder;"><a href="#/profile/{{user.id}}">{{user.email}}</a></span>
+           <span style="font-weight: bolder;">|</span>
+           <span ng-if="!hideLogin" id="signUpOut"><a href="#/signup">SIGN UP</a></span>
+           <span ng-if="hideLogin" style="font-weight:bolder;"><a style="cursor: pointer;" >LOGOUT</a></span>
+       </div>
+       <br/>
+       <br/>
+       <div class="row" id="socialMedia">
+           <a href="#/"><img src="img/facebook.png" style="width:30px; height:30px;"></a>
+           <a href="#/"><img src="img/twitter.png" style="width:30px; height:30px;"></a>
+           <a href="#/"><img src="img/gplus.png" style="width:30px; height:30px;"></a>
+       </div>
+   </div>
+
+</div>
