@@ -3,7 +3,7 @@
 /* Directives */
 
 var nalipaDirectives = angular.module('nalipaDirectives', []);
-nalipaDirectives.directive('nalipaTopHeader', function() {
+nalipaDirectives.directive('nalipaTopHeader', function(authService,$state,$window) {
     var controller = ['$scope',function ($scope) {
 
 
@@ -26,6 +26,24 @@ nalipaDirectives.directive('nalipaTopHeader', function() {
                     scope.hideLogin = true;
                 }
             });
+
+
+
+            scope.logout = function(){
+
+                authService.logout().then(function(response){
+                    localStorage.removeItem('authenicatedUser');
+                    localStorage.removeItem('pending_order');
+                    localStorage.removeItem('totalAmount');
+                    localStorage.removeItem('pendingTransaction');
+                    localStorage.removeItem('editTransaction');
+                    $state.go('home');
+                    $window.location.reload();
+
+                })
+            }
+
+
         }
 
     };

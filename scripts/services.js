@@ -10,7 +10,7 @@ var nalipaServices = angular.module('nalipaServices', ['ngResource'])
     .value('STRIPE_URL', 'http://localhost:8080/stripe/payment')
     .value('SELCOM_AUTH_URL', 'https://paypoint.selcommobile.com/api/selcom.pos.server.php');
 
-nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q) {
+nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookieStore) {
     var orderManager = {
         listOrders: function () {
             var deferred = $q.defer();
@@ -54,11 +54,14 @@ nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q) {
     return orderManager;
 });
 
-nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q) {
+nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q,$cookieStore,userManager) {
+    var loggedUser = userManager.getAuthenticatedUser();
+
     var transactionManager = {
         listTransactions: function () {
             var deferred = $q.defer();
-            $http.get(API_BASE_URL + '/transactions').then(function (result) {
+            $http.get(API_BASE_URL + '/userTransactions/'+loggedUser.id).then(function (result) {
+                console.log(result);
                 deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
@@ -106,12 +109,22 @@ nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q) 
 
     return transactionManager;
 });
-nalipaServices.factory('userManager', function ($http, API_BASE_URL, BASE_AUTH_URL, $q) {
+nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL, BASE_AUTH_URL, $q) {
     var userManager = {
+
+        getUserById: function(user_id) {
+            var deferred = $q.defer();
+            $http.get(API_BASE_URL + '/users/'+user_id).then(function (result) {
+                deferred.resolve(result);
+            }, function (error) {
+                deferred.reject(error);
+            });
+            return deferred.promise;
+        },
         listUsers: function () {
             var deferred = $q.defer();
             $http.get(API_BASE_URL + '/users').then(function (result) {
-                deferred.resolve();
+                deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
             });
@@ -156,13 +169,14 @@ nalipaServices.factory('userManager', function ($http, API_BASE_URL, BASE_AUTH_U
         }
         ,
         getAuthenticatedUser: function () {
-            var deferred = $q.defer();
-            $http.get(API_BASE_URL + '/me').then(function (result) {
-                deferred.resolve(result);
-            }, function (error) {
-                deferred.reject(error);
-            });
-            return deferred.promise;
+            //var deferred = $q.defer();
+            //$http.get(API_BASE_URL + '/me').then(function (result) {
+            //    deferred.resolve(result);
+            //}, function (error) {
+            //    deferred.reject(error);
+            //});
+            //return deferred.promise;
+            return eval('('+$cookieStore.get('user')+')');
         }
         ,
         requestToken: function (credentials) {
@@ -193,8 +207,52 @@ nalipaServices.factory('userManager', function ($http, API_BASE_URL, BASE_AUTH_U
             //return deferred.promise;
         }
 
+
     }
     return userManager;
+});
+
+nalipaServices.factory('authService',function ($http, API_BASE_URL, BASE_AUTH_URL, $q, $cookieStore,$state,userManager) {
+    var auth = {};
+    auth.login = function (credentials) {
+        return $http.post(API_BASE_URL + '/login', credentials).then(function (response, status) {
+            if ( response.status == 200 &&  response.data !="login failed" ) {
+                auth.user = response.data;
+                $cookieStore.put('user', JSON.stringify(auth.user));
+
+                userManager.requestToken({
+                    email:credentials.email,
+                    password:credentials.password
+                }).then(function(tokenResponse){
+
+                    if ( tokenResponse.statusText == "OK" )
+                    {
+                        localStorage.setItem('access_token',tokenResponse.data.access_token);
+                        if (localStorage.getItem('unAuthorizedState')){
+                            $state.go(localStorage.getItem('unAuthorizedState'));
+                        }else{
+                            $state.go('home');
+                        }
+
+
+                    }
+
+                },function(error){
+                    console.log(error);
+                });
+            }
+
+            return auth.user;
+        });
+    }
+    auth.logout = function () {
+        return $http.post(API_BASE_URL + '/logout').then(function (response) {
+            auth.user = undefined;
+            localStorage.removeItem('unAuthorizedState');
+            $cookieStore.remove('user');
+        });
+    }
+    return auth;
 });
 
 nalipaServices.factory('questionManager', function ($http, API_BASE_URL, $q) {
@@ -412,31 +470,42 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             return this.invalidList;
         },
         createToken: function (cardDetails) {
-            stripe.card.createToken(
-                {
-                    number: cardDetails.card_number,
-                    cvc: cardDetails.cvc,
-                    exp_month: cardDetails.expire_month,
-                    exp_year: cardDetails.expire_year,
-                    address_zip: cardDetails.zip
-                }
-            ).then(function (response) {
-                cardDetails.token = response.id;
-                cardDetails.amount = parseFloat(localStorage.getItem('totalAmount'));
-                stripeManager.chargeCustomer(cardDetails).then(function (results) {
-
-                    if (results.statusText == "OK" && results.data) {
-                        selcomManager.rechargeCustomer();
+            //stripe.card.createToken(
+            //    {
+            //        number: cardDetails.card_number,
+            //        cvc: cardDetails.cvc,
+            //        exp_month: cardDetails.expire_month,
+            //        exp_year: cardDetails.expire_year,
+            //        address_zip: cardDetails.zip
+            //    }
+            //).then(function (response) {
+            //    cardDetails.token = response.id;
+            //    cardDetails.amount = parseFloat(localStorage.getItem('totalAmount'));
+            //    stripeManager.chargeCustomer(cardDetails).then(function (results) {
+            //
+            //        if (results.statusText == "OK" && results.data) {
+                        selcomManager.rechargeCustomer().then(function(data){
+                            //console.log('data',data);
+                            angular.forEach(data,function(promiseObject){
+                                promiseObject.then(function(success){
+                                    console.log(success);
+                                },function(failure){
+                                    console.log(failure);
+                                })
+                            })
+                        },function(error){
+                            console.log('error',error);
+                        });
                         //TODO:: take care of selcom  transaction
-                    } else {
-
-                    }
-                    console.log('customer charges', results);
-                }, function (error) {
-                    console.log(error);
-                });
-                console.log('card token charges', response);
-            })
+                //    } else {
+                //
+                //    }
+                //    console.log('customer charges', results);
+                //}, function (error) {
+                //    console.log(error);
+                //});
+                //console.log('card token charges', response);
+            //})
         },
         chargeCustomer: function (paymentInformation) {
             var defer = $q.defer();
@@ -534,22 +603,23 @@ nalipaServices.factory('selcomManager', function ($http,SELCOM_AUTH_URL, $q) {
         },
         rechargeCustomer: function () {
             var paymentInformations = selcomManager.prepareOrdersForRecharge();
-
+            var httpCalls = [];
             angular.forEach(paymentInformations, function (paymentInformation) {
-                var defer = $q.defer();
-                $http({
-                    url: SELCOM_AUTH_URL,
-                    method: "POST",
-                    headers: {"Content-Type": 'application/xml'},
-                    data: paymentInformation
-                }).success(function (data) {
-                    defer.resolve(data);
-                }).error(function (error) {
-                    defer.reject(error);
-                });
 
-                return defer.promise;
+                var httpCall = $http({
+                                url: SELCOM_AUTH_URL,
+                                method: "POST",
+                                headers: {"Content-Type": 'application/xml'},
+                                data: paymentInformation
+                                });
+                httpCalls.push(httpCall);
+
             })
+            var deferred = $q.defer();
+            $.when( httpCalls ).done(function(data){
+                deferred.resolve(data);
+            });
+            return deferred.promise;
 
         }
     }

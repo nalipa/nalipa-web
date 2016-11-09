@@ -5,7 +5,8 @@
 
 var nalipa = angular.module('nalipa',
                     ['ngRoute',
-                     'ngCookies', 
+                     'ui.router',
+                     'ngCookies',
                      'ngSanitize',
                      'nalipaDirectives',
                      'nalipaControllers',
@@ -19,56 +20,167 @@ var nalipa = angular.module('nalipa',
                      'credit-cards',
                      'angular-stripe',
                      'angular-spinkit', 'angularjs-dropdown-multiselect',
-                     'ngTable','multi-select-tree'])
-.config(function($routeProvider,ivhTreeviewOptionsProvider,stripeProvider) {
-	$routeProvider.when('/', {
-        templateUrl: 'views/home.html',
-        controller: 'HomeController'
-    }).when('/how-it-works', {
-        templateUrl: 'views/how-it-works.html',
-        controller: 'WorkController'
-    }).when('/cart', {
-        templateUrl: 'views/cart.html',
-        controller: 'CartController'
-    }).when('/cart/:id/edit/:type', {
-        templateUrl: 'views/partials/editCart.html',
-        controller: 'CartController'
-    }).when('/cart/:id/delete', {
-        templateUrl: 'views/deleteCart.html',
-        controller: 'CartController'
-    }).when('/card-details', {
-        templateUrl: 'views/partials/cardDetails.html',
-        controller: 'CartController'
-    }).when('/orders', {
-        templateUrl: 'views/order.html',
-        controller: 'OrderController'
-    }).when('/orders/:id/payfor', {
-        templateUrl: 'views/payforOrder.html',
-        controller: 'OrderController'
-    }).when('/orders/:id/details', {
-        templateUrl: 'views/orderDetails.html',
-        controller: 'OrderController'
-    }).when('/orders/:id/delete', {
-        templateUrl: 'views/deleteOrder.html',
-        controller: 'OrderController'
-    }).when('/faqs', {
-        templateUrl: 'views/faqs.html',
-        controller: 'FAQsController'
-    }).when('/contacts', {
-        templateUrl: 'views/contacts.html',
-        controller: 'ContactsController'
-    }).when('/settings', {
-        templateUrl: 'views/settings.html',
-        controller: 'SettingsController'
-    }).when('/login', {
-        templateUrl: 'views/login.html',
-        controller: 'UserController'
-    }).when('/signup', {
-        templateUrl: 'views/signup.html',
-        controller: 'UserController'
-    }).otherwise({
-        redirectTo : '/'
+                     'ngTable','multi-select-tree']);
+nalipa.run(function($rootScope,$state,$cookieStore,authService){
+
+    $rootScope.$on('$stateChangeError', function(event, toState,toParams, fromState, fromParams, error) {
+
+            localStorage.setItem('unAuthorizedState',toState.name);
+            if(error.unAuthorized) {
+                $state.go("login");
+            }else if(error.authorized){
+                $state.go(toState.name);
+            }
+        });
+    authService.user=$cookieStore.get('user');
+});
+nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$routeProvider,ivhTreeviewOptionsProvider,stripeProvider) {
+
+    $stateProvider.state('home',{
+        url: '/',
+        controller:'HomeController',
+        templateUrl:'views/home.html'
+    })
+        .state('how-it-works',{
+        url: '/how-it-works',
+        controller:'WorkController',
+        templateUrl: 'views/how-it-works.html'
+    })
+        .state('cart',{
+        url: '/cart',
+        abstract:false,
+        controller:'CartController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+        templateUrl: 'views/cart.html'
+    })
+        .state('edit-cart',{
+        url: '/cart/:id/edit/:type',
+        controller:'CartController',
+        templateUrl: 'views/partials/editCart.html'
+    })
+        .state('delete-cart',{
+        url: '/cart/:id/delete',
+        controller:'CartController',
+        templateUrl: 'views/deleteCart.html'
+    })
+        .state('card-details',{
+        url: '/card-details',
+        controller:'CartController',
+        templateUrl: 'views/partials/cardDetails.html'
+    })
+        .state('orders',{
+        url: '/orders',
+        controller:'OrderController',
+        templateUrl: 'views/order.html'
+    })
+        .state('pay-order',{
+        url: '/orders/:id/payfor',
+        controller:'OrderController',
+        templateUrl: 'views/payforOrder.html'
+    })
+        .state('order-detail',{
+        url: '/orders/:id/details',
+        controller:'OrderController',
+        templateUrl: 'views/orderDetails.html'
+    })
+        .state('delete-order',{
+        url: '/orders/:id/delete',
+        controller:'OrderController',
+        templateUrl: 'views/deleteOrder.html'
+    })
+        .state('faqs',{
+        url: '/faqs',
+        controller:'FAQsController',
+        templateUrl: 'views/faqs.html'
+    })
+        .state('contacts',{
+        url: '/contacts',
+        controller:'ContactsController',
+        templateUrl: 'views/contacts.html'
+    })
+        .state('settings',{
+        url: '/settings',
+        controller:'SettingsController',
+        templateUrl: 'views/settings.html'
+    })
+        .state('profile',{
+            url: '/profile/:user_id',
+            abstract:false,
+            controller:'UserController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/profile.html'
+        })
+        .state('login',{
+        url: '/login',
+        controller:'UserController',
+        templateUrl: 'views/login.html'
+    })
+        .state('signup',{
+        url: '/signup',
+        controller:'UserController',
+        templateUrl: 'views/signup.html'
     });
+    $urlRouterProvider.otherwise('/');
+    //$locationProvider.html5Mode({
+    //    enabled: true,
+    //    requireBase: false
+    //});
+    //$routeProvider.when('/', {
+    //    templateUrl: 'views/home.html',
+    //    controller: 'HomeController'
+    //}).when('/how-it-works', {
+    //    templateUrl: 'views/how-it-works.html',
+    //    controller: 'WorkController'
+    //}).when('/cart', {
+    //    templateUrl: 'views/cart.html',
+    //    controller: 'CartController'
+    //}).when('/cart/:id/edit/:type', {
+    //    templateUrl: 'views/partials/editCart.html',
+    //    controller: 'CartController'
+    //}).when('/cart/:id/delete', {
+    //    templateUrl: 'views/deleteCart.html',
+    //    controller: 'CartController'
+    //}).when('/card-details', {
+    //    templateUrl: 'views/partials/cardDetails.html',
+    //    controller: 'CartController'
+    //}).when('/orders', {
+    //    templateUrl: 'views/order.html',
+    //    controller: 'OrderController'
+    //}).when('/orders/:id/payfor', {
+    //    templateUrl: 'views/payforOrder.html',
+    //    controller: 'OrderController'
+    //}).when('/orders/:id/details', {
+    //    templateUrl: 'views/orderDetails.html',
+    //    controller: 'OrderController'
+    //}).when('/orders/:id/delete', {
+    //    templateUrl: 'views/deleteOrder.html',
+    //    controller: 'OrderController'
+    //}).when('/faqs', {
+    //    templateUrl: 'views/faqs.html',
+    //    controller: 'FAQsController'
+    //}).when('/contacts', {
+    //    templateUrl: 'views/contacts.html',
+    //    controller: 'ContactsController'
+    //}).when('/settings', {
+    //    templateUrl: 'views/settings.html',
+    //    controller: 'SettingsController'
+    //}).when('/login', {
+    //    templateUrl: 'views/login.html',
+    //    controller: 'UserController'
+    //}).when('/signup', {
+    //    templateUrl: 'views/signup.html',
+    //    controller: 'UserController'
+    //}).otherwise({
+    //    redirectTo : '/'
+    //});
 
     stripeProvider.setPublishableKey('pk_test_Fs8KW1paR1d1Iox3hGltB7VF');
 

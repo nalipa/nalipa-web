@@ -14,8 +14,8 @@
                        <tr>
                            <td valign="bottom" class="top_nav_td"><a href="#/home" >Home</a></td>
                            <td valign="bottom" class="top_nav_td"><a href="#/how-it-works" >How It Works</a></td>
-                           <td valign="bottom" class="top_nav_td"><a href="#/cart" >Cart</a></td>
-                           <td valign="bottom" class="top_nav_td"><a href="#/orders" >Orders</a></td>
+                           <td valign="bottom" class="top_nav_td" ng-if="hideLogin"><a href="#/cart" >Cart</a></td>
+                           <td valign="bottom" class="top_nav_td" ng-if="hideLogin"><a href="#/orders" >Orders</a></td>
                            <td valign="bottom" class="top_nav_td"><a href="#/faqs" >FAQs</a></td>
                            <td valign="bottom" class="top_nav_td"><a href="#/contacts" >Contact Us</a></td>
                            <td valign="bottom" class="top_nav_td"><a href="#/settings" >Settings</a></td>
@@ -33,7 +33,7 @@
            <span ng-if="hideLogin" style="font-weight:bolder;"><a href="#/profile/{{user.id}}">{{user.email}}</a></span>
            <span style="font-weight: bolder;">|</span>
            <span ng-if="!hideLogin" id="signUpOut"><a href="#/signup">SIGN UP</a></span>
-           <span ng-if="hideLogin" style="font-weight:bolder;"><a style="cursor: pointer;" >LOGOUT</a></span>
+           <span ng-if="hideLogin" style="font-weight:bolder;"><a style="cursor: pointer;" ng-click="logout()" >LOGOUT</a></span>
        </div>
        <br/>
        <br/>
