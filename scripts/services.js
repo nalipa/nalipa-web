@@ -5,8 +5,8 @@
 /* Services */
 
 var nalipaServices = angular.module('nalipaServices', ['ngResource'])
-    .value('API_BASE_URL', location.origin+'/nalipa_api/public/index.php/api')
-    .value('BASE_AUTH_URL', location.origin+'/nalipa_api/public/index.php')
+    .value('API_BASE_URL', location.origin+location.pathname+'public/index.php/api')
+    .value('BASE_AUTH_URL', location.origin+location.pathname+'public/index.php')
     .value('STRIPE_URL', location.origin+':8080/stripe/payment')
     .value('SELCOM_AUTH_URL', 'https://paypoint.selcommobile.com/api/selcom.pos.server.php');
 
