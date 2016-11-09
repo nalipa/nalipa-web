@@ -59,4 +59,5 @@ CACHE:
 
  scripts/vendors/toaster/toaster.min.css
  scripts/vendors/spinkit/angular-spinkit.min.css
+ styles/font-awesome/css/font-awesome.min.css
 

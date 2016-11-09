@@ -13,6 +13,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			main.authenicatedUser = eval('('+$cookieStore.get('user')+')');
 		}
 
+
 		return main;
 
 	}])
