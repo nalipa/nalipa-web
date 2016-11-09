@@ -5,9 +5,9 @@
 /* Services */
 
 var nalipaServices = angular.module('nalipaServices', ['ngResource'])
-    .value('API_BASE_URL', 'http://localhost/nalipa_api/public/index.php/api')
-    .value('BASE_AUTH_URL', 'http://localhost/nalipa_api/public/index.php')
-    .value('STRIPE_URL', 'http://localhost:8080/stripe/payment')
+    .value('API_BASE_URL', location.origin+'/nalipa_api/public/index.php/api')
+    .value('BASE_AUTH_URL', location.origin+'/nalipa_api/public/index.php')
+    .value('STRIPE_URL', location.origin+':8080/stripe/payment')
     .value('SELCOM_AUTH_URL', 'https://paypoint.selcommobile.com/api/selcom.pos.server.php');
 
 nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookieStore) {
@@ -61,7 +61,7 @@ nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q,$
         listTransactions: function () {
             var deferred = $q.defer();
             $http.get(API_BASE_URL + '/userTransactions/'+loggedUser.id).then(function (result) {
-                console.log(result);
+
                 deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
