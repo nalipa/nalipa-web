@@ -519,7 +519,8 @@ nalipaServices.factory('selcomManager', function ($http,SELCOM_AUTH_URL, $q) {
                 var amount = data.amount;
                 var msisdn = data.account_number;
 
-                var xmlPayLoad = '<?xml version="1.0" encoding="iso-8859-1"?>';
+                //var xmlPayLoad = '<?xml version="1.0" encoding="iso-8859-1"?>';
+                var xmlPayLoad = '';
                 xmlPayLoad += '<methodCall>';
                 xmlPayLoad += '<methodName>' + methodName + '</methodName>'; //
                 xmlPayLoad += '<params>';
