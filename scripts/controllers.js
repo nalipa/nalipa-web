@@ -42,9 +42,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			transaction.sms_result = "";
 			transaction.status = "PENDING TRANSACTION";
 			transaction.user_id = $scope.$parent.$parent.main.authenicatedUser.id;
-			console.log(transaction);
 			transactionManager.addTransaction(transaction).then(function(response){
-				console.log(response)
 				if (response && response.statusText == "Unauthorized" )
 				{
 					localStorage.setItem('pending_transaction',JSON.stringify(transaction));
@@ -472,18 +470,15 @@ var nalipaControllers = angular.module('nalipaControllers', [])
         user.registerUser = function(user){
 
             userManager.addUser(user).then(function(result){
-                console.log(result);
             },function(error){
 
-            })
-            console.log(user);
+            });
         }
 
 		user.authenicateUser = function(credentials){
 			user.message = {isPositive:false,body:"",show:false};
 			if ( typeof credentials != 'undefined' && checkIfCredentialsSupplied(credentials)) {
 
-				console.log(credentials);
 				authService.login(credentials).then(function(authenicatedUser){
 					if ( authenicatedUser )
 					{
@@ -512,7 +507,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 					}
 
 				},function(error){
-					console.log(response);
+
 				})
 				//userManager.login(credentials).then(function(result){
                 //
@@ -559,7 +554,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 
 			}else{
-				console.log(credentials);
+
 			}
 		}
 

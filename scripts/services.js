@@ -53,7 +53,6 @@ nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookie
     }
     return orderManager;
 });
-
 nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q,$cookieStore,userManager) {
 
 
@@ -205,7 +204,6 @@ nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL
     }
     return userManager;
 });
-
 nalipaServices.factory('authService',function ($http, API_BASE_URL, BASE_AUTH_URL, $q, $cookieStore,$state,userManager) {
     var auth = {};
     auth.login = function (credentials) {
@@ -243,7 +241,6 @@ nalipaServices.factory('authService',function ($http, API_BASE_URL, BASE_AUTH_UR
     }
     return auth;
 });
-
 nalipaServices.factory('questionManager', function ($http, API_BASE_URL, $q) {
     var questionManager = {
         listQuestions: function () {
@@ -287,7 +284,6 @@ nalipaServices.factory('questionManager', function ($http, API_BASE_URL, $q) {
     }
     return questionManager;
 });
-
 nalipaServices.factory('countryManager', function ($http, API_BASE_URL, $q) {
 
     var countryManager = {
@@ -332,8 +328,7 @@ nalipaServices.factory('countryManager', function ($http, API_BASE_URL, $q) {
     }
 
     return countryManager;
-})
-
+});
 nalipaServices.factory('serviceProviderManager', function ($http, API_BASE_URL, $q) {
     var serviceProviderManager = {
         listServiceProviders: function () {
@@ -377,7 +372,6 @@ nalipaServices.factory('serviceProviderManager', function ($http, API_BASE_URL, 
     }
     return serviceProviderManager;
 });
-
 nalipaServices.factory('amountManager', function ($http, API_BASE_URL, $q) {
     var amountManager = {
         listAmounts: function () {
@@ -429,8 +423,6 @@ nalipaServices.factory('paramManager', function () {
     }
     return paramManager;
 });
-
-
 nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, selcomManager) {
     var stripeManager = {
         validateCardDetails: function (cardDetails) {
@@ -474,10 +466,10 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             //
             //        if (results.statusText == "OK" && results.data) {
                         selcomManager.rechargeCustomer().then(function(data){
-                            //console.log('data',data);
+
                             angular.forEach(data,function(promiseObject){
                                 promiseObject.then(function(success){
-                                    console.log(success);
+
                                 },function(failure){
                                     console.log(failure);
                                 })
@@ -510,7 +502,6 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
 
     return stripeManager;
 });
-
 nalipaServices.factory('selcomManager', function ($http,SELCOM_AUTH_URL, $q) {
     var selcomManager = {
         prepareOrdersForRecharge: function () {
@@ -599,7 +590,7 @@ nalipaServices.factory('selcomManager', function ($http,SELCOM_AUTH_URL, $q) {
                                 url: SELCOM_AUTH_URL,
                                 method: "POST",
                                 headers: {"Content-Type": 'application/xml'},
-                                data: paymentInformation
+                                data: paymentInformation.xmlPayLoad
                                 });
                 httpCalls.push(httpCall);
 
