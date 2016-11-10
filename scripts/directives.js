@@ -37,9 +37,10 @@ nalipaDirectives.directive('nalipaTopHeader', function(authService,$state,$windo
                     localStorage.removeItem('totalAmount');
                     localStorage.removeItem('pendingTransaction');
                     localStorage.removeItem('editTransaction');
+                    scope.$parent.main.authenicatedUser = "";
+                    scope.user = "";
+                    scope.hideLogin = false;
                     $state.go('home');
-                    $window.location.reload();
-
                 })
             }
 

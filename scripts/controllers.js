@@ -480,12 +480,37 @@ var nalipaControllers = angular.module('nalipaControllers', [])
         }
 
 		user.authenicateUser = function(credentials){
+			user.message = {isPositive:false,body:"",show:false};
 			if ( typeof credentials != 'undefined' && checkIfCredentialsSupplied(credentials)) {
 
 				console.log(credentials);
-				authService.login(credentials).then(function(response){
-					$state.go('home');
-					$window.location.reload();
+				authService.login(credentials).then(function(authenicatedUser){
+					if ( authenicatedUser )
+					{
+						user.message.isPositive = true;
+						user.message.body = "User logged in successfully";
+						user.message.show = true;
+						if (localStorage.getItem('unAuthorizedState')){
+
+							setTimeout(function() {
+								$scope.$parent.$parent.main.authenicatedUser = authenicatedUser;
+								$state.go(localStorage.getItem('unAuthorizedState'));
+							}, 3000);
+
+						}else{
+							setTimeout(function() {
+								$scope.$parent.$parent.main.authenicatedUser = authenicatedUser;
+								$state.go('home');
+							}, 3000);
+
+						}
+
+					}else{
+						user.message.isPositive = false;
+						user.message.body = "Login failure";
+						user.message.show = true;
+					}
+
 				},function(error){
 					console.log(response);
 				})

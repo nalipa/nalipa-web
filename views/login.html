@@ -4,14 +4,7 @@
         <br/>
         <form name="login" ng-submit="user.authenicateUser(credentials)">
 
-            <!--<div class="input-group margin-bottom-sm">-->
-                <!--<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>-->
-                <!--<input class="form-control" type="text" placeholder="Email address">-->
-            <!--</div>-->
-            <!--<div class="input-group">-->
-                <!--<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>-->
-                <!--<input class="form-control" type="password" placeholder="Password">-->
-            <!--</div>-->
+
 
             <div class="input-group margin-bottom-lg">
                 <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
@@ -28,6 +21,8 @@
                     <a href="#/signup">Sign Up</a>
                 </label>
             </div>
+            <div ng-if="user.message.show&&user.message.isPositive" class="alert alert-success" role="alert">{{user.message.body}}</div>
+            <div ng-if="user.message.show&&!user.message.isPositive" class="alert alert-danger" role="alert">{{user.message.body}}, Wrong <b>username</b> or <b>password</b></div>
             <button type="submit" class="btn btn-default">Submit</button>
         </form>
     </div>

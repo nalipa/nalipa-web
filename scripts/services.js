@@ -55,10 +55,11 @@ nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookie
 });
 
 nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q,$cookieStore,userManager) {
-    var loggedUser = userManager.getAuthenticatedUser();
+
 
     var transactionManager = {
         listTransactions: function () {
+            var loggedUser = userManager.getAuthenticatedUser();
             var deferred = $q.defer();
             $http.get(API_BASE_URL + '/userTransactions/'+loggedUser.id).then(function (result) {
 
@@ -169,13 +170,6 @@ nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL
         }
         ,
         getAuthenticatedUser: function () {
-            //var deferred = $q.defer();
-            //$http.get(API_BASE_URL + '/me').then(function (result) {
-            //    deferred.resolve(result);
-            //}, function (error) {
-            //    deferred.reject(error);
-            //});
-            //return deferred.promise;
             return eval('('+$cookieStore.get('user')+')');
         }
         ,
@@ -228,11 +222,6 @@ nalipaServices.factory('authService',function ($http, API_BASE_URL, BASE_AUTH_UR
                     if ( tokenResponse.statusText == "OK" )
                     {
                         localStorage.setItem('access_token',tokenResponse.data.access_token);
-                        if (localStorage.getItem('unAuthorizedState')){
-                            $state.go(localStorage.getItem('unAuthorizedState'));
-                        }else{
-                            $state.go('home');
-                        }
 
 
                     }
