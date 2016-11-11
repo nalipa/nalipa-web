@@ -60,36 +60,71 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
         .state('edit-cart',{
         url: '/cart/:id/edit/:type',
         controller:'CartController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
         templateUrl: 'views/partials/editCart.html'
     })
         .state('delete-cart',{
         url: '/cart/:id/delete',
         controller:'CartController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
         templateUrl: 'views/deleteCart.html'
     })
         .state('card-details',{
         url: '/card-details',
         controller:'CartController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
         templateUrl: 'views/partials/cardDetails.html'
     })
         .state('orders',{
         url: '/orders',
         controller:'OrderController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
         templateUrl: 'views/order.html'
     })
         .state('pay-order',{
         url: '/orders/:id/payfor',
         controller:'OrderController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
         templateUrl: 'views/payforOrder.html'
     })
         .state('order-detail',{
         url: '/orders/:id/details',
         controller:'OrderController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
         templateUrl: 'views/orderDetails.html'
     })
         .state('delete-order',{
         url: '/orders/:id/delete',
         controller:'OrderController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
         templateUrl: 'views/deleteOrder.html'
     })
         .state('faqs',{
@@ -105,6 +140,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
         .state('settings',{
         url: '/settings',
         controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
         templateUrl: 'views/settings.html'
     })
         .state('profile',{

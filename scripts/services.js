@@ -7,9 +7,7 @@
 var nalipaServices = angular.module('nalipaServices', ['ngResource'])
     .value('API_BASE_URL', location.origin+'/nalipa/public/index.php/api')
     .value('BASE_AUTH_URL', location.origin+'/nalipa/public/index.php')
-    .value('STRIPE_URL', location.origin+':8080/stripe/payment')
-    .value('SELCOM_AUTH_URL', 'https://paypoint.selcommobile.com/api/selcom.pos.server.php');
-
+    .value('STRIPE_URL', location.origin+':8080/stripe/payment');
 nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookieStore) {
     var orderManager = {
         listOrders: function () {
@@ -468,8 +466,10 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
                         selcomManager.rechargeCustomer().then(function(data){
 
                             angular.forEach(data,function(promiseObject){
+                                console.log(promiseObject);
                                 promiseObject.then(function(success){
-
+                                    var x2js = new X2JS();
+                                    var jsonObj = x2js.xml_str2json( success.data );
                                 },function(failure){
                                     console.log(failure);
                                 })
@@ -502,7 +502,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
 
     return stripeManager;
 });
-nalipaServices.factory('selcomManager', function ($http,SELCOM_AUTH_URL, $q) {
+nalipaServices.factory('selcomManager', function ($http,API_BASE_URL, $q) {
     var selcomManager = {
         prepareOrdersForRecharge: function () {
             var availableOrders = eval('(' + localStorage.getItem('pendingTransaction') + ')');
@@ -513,70 +513,22 @@ nalipaServices.factory('selcomManager', function ($http,SELCOM_AUTH_URL, $q) {
                 var methodName = 'SELCOM.utilityPayment';
                 var vendorName = 'BIONICIT';
                 var utilityCode = data.service_provider.utility_code.utility_code;
-                var utilityRef = 763453879;
+                var utilityRef = '0654298240';
                 var pinNumber = 965778;
                 var transactionId = 657;
                 var amount = data.amount;
                 var msisdn = data.account_number;
 
-                //var xmlPayLoad = '<?xml version="1.0" encoding="iso-8859-1"?>';
-                var xmlPayLoad = '';
-                xmlPayLoad += '<methodCall>';
-                xmlPayLoad += '<methodName>' + methodName + '</methodName>'; //
-                xmlPayLoad += '<params>';
-                xmlPayLoad += '<param>';
-                xmlPayLoad += '<value>';
-                xmlPayLoad += '<struct>';
-                xmlPayLoad += '<member>';
-                xmlPayLoad += '<name>vendor</name>'; // vendor
-                xmlPayLoad += '<value>';
-                xmlPayLoad += '<string>' + vendorName + '</string>';
-                xmlPayLoad += '</value>';
-                xmlPayLoad += '</member>';
-                xmlPayLoad += '<member>';
-                xmlPayLoad += '<name>pin</name>';
-                xmlPayLoad += '<value>';
-                xmlPayLoad += '<string>' + pinNumber + '</string>';
-                xmlPayLoad += '</value>';
-                xmlPayLoad += '</member>';
-                xmlPayLoad += '<member>';
-                xmlPayLoad += '<name>utilitycode</name>';
-                xmlPayLoad += '<value>';
-                xmlPayLoad += '<string>' + utilityCode + '</string>';
-                xmlPayLoad += '</value>';
-                xmlPayLoad += '</member>';
-                xmlPayLoad += '<member>';
-                xmlPayLoad += '<name>utilityref</name>';
-                xmlPayLoad += '<value>';
-                xmlPayLoad += '<string>' + utilityRef + '</string>';
-                xmlPayLoad += '</value>';
-                xmlPayLoad += '</member>';
-                xmlPayLoad += '<member>';
-                xmlPayLoad += '<name>transid</name>';
-                xmlPayLoad += '<value>';
-                xmlPayLoad += '<string>' + transactionId + '</string>';
-                xmlPayLoad += '</value>';
-                xmlPayLoad += '</member>';
-                xmlPayLoad += '<member>';
-                xmlPayLoad += '<name>amount</name>';
-                xmlPayLoad += '<value>';
-                xmlPayLoad += '<string>' + amount + '</string>';
-                xmlPayLoad += '</value>';
-                xmlPayLoad += '</member>';
-                xmlPayLoad += '<member>';
-                xmlPayLoad += '<name>msisdn</name>';
-                xmlPayLoad += '<value>';
-                xmlPayLoad += '<string>' + msisdn + '</string>';
-                xmlPayLoad += '</value>';
-                xmlPayLoad += '</member>';
-                xmlPayLoad += '</struct>';
-                xmlPayLoad += '</value>';
-                xmlPayLoad += '</param>';
-                xmlPayLoad += '</params>';
-                xmlPayLoad += '</methodCall>';
 
-
-                preparedOrder.push({vender: utilityCode, xmlPayLoad: xmlPayLoad});
+                preparedOrder.push(
+                    {
+                        utilityCode: utilityCode,
+                        amount: amount,
+                        pinNumber:pinNumber,
+                        utilityRef:utilityRef,
+                        transactionId:transactionId
+                    }
+                );
 
 
             })
@@ -587,15 +539,12 @@ nalipaServices.factory('selcomManager', function ($http,SELCOM_AUTH_URL, $q) {
             var httpCalls = [];
             angular.forEach(paymentInformations, function (paymentInformation) {
 
-                var httpCall = $http({
-                                url: SELCOM_AUTH_URL,
-                                method: "POST",
-                                headers: {"Content-Type": 'application/xml'},
-                                data: paymentInformation.xmlPayLoad
-                                });
+                var httpCall = $http.post(API_BASE_URL + '/rechargeCustomer', paymentInformation);
+
                 httpCalls.push(httpCall);
 
-            })
+            });
+
             var deferred = $q.defer();
             $.when( httpCalls ).done(function(data){
                 deferred.resolve(data);
