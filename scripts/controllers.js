@@ -36,55 +36,82 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		}
 
 		home.sendAirTime = function(transaction){
-
+			home.showAirSpinner = true;
 			transaction.utility_code_id = 1;
 			transaction.account_number = transaction.recipient_number;
 			transaction.sms_result = "";
 			transaction.status = "PENDING TRANSACTION";
-			transaction.user_id = $scope.$parent.$parent.main.authenicatedUser.id;
-			transactionManager.addTransaction(transaction).then(function(response){
-				if (response && response.statusText == "Unauthorized" )
-				{
-					localStorage.setItem('pending_transaction',JSON.stringify(transaction));
-					$location.path('login');
+			if ( !$scope.$parent.$parent.main.authenicatedUser.id ) {
+				localStorage.removeItem('raw_transaction');
+				localStorage.removeItem('unAuthorizedState');
+				transaction.type = "airtime";
+				localStorage.setItem('raw_transaction',JSON.stringify(transaction));
+				localStorage.setItem('unAuthorizedState','cart');
+				$location.path('login');
+			} else {
+				transaction.user_id = $scope.$parent.$parent.main.authenicatedUser.id;
+				transactionManager.addTransaction(transaction).then(function(response){
+					home.showAirSpinner = false;
+					if (response && response.statusText == "Unauthorized" )
+					{
+						localStorage.setItem('pending_transaction',JSON.stringify(transaction));
+						$location.path('login');
 
-				}
-				else{
-					$location.path('cart');
-				}
-			},function(error){
-				if ( error.statusText == "Unauthorized" )
-				{
-					localStorage.setItem('pending_transaction',JSON.stringify(transaction));
-					$location.path('login');
+					}
+					else{
+						$location.path('cart');
+					}
+				},function(error){
+					if ( error.statusText == "Unauthorized" )
+					{
+						localStorage.setItem('pending_transaction',JSON.stringify(transaction));
+						$location.path('login');
 
-				}
-			});
+					}
+				});
+			}
+
+
 		}
 
 		home.payBills = function(transaction){
+			home.showBillSpinner = true;
 			transaction.utility_code_id = 3;
 			transaction.sms_result = "";
 			transaction.status = "PENDING TRANSACTION";
-			transaction.user_id = $scope.$parent.$parent.main.authenicatedUser.id;
-			transactionManager.addTransaction(transaction).then(function(response){
-				if ( response.statusText == "Unauthorized" )
-				{
-					localStorage.setItem('pending_transaction',JSON.stringify(transaction));
-					$location.path('login');
 
-				}else
-				{
-					$location.path('cart');
-				}
-			},function(error){
-				if ( error.statusText == "Unauthorized" )
-				{
-					localStorage.setItem('pending_transaction',JSON.stringify(transaction));
-					$location.path('login');
+			if ( !$scope.$parent.$parent.main.authenicatedUser.id ) {
+				localStorage.removeItem('raw_transaction');
+				localStorage.removeItem('unAuthorizedState');
+				transaction.type = "bill";
+				localStorage.setItem('raw_transaction',JSON.stringify(transaction));
+				localStorage.setItem('unAuthorizedState','cart');
+				$location.path('login');
+			} else {
+				transaction.user_id = $scope.$parent.$parent.main.authenicatedUser.id;
+				transactionManager.addTransaction(transaction).then(function(response){
+					home.showBillSpinner = false;
+						if ( response.statusText == "Unauthorized" )
+					{
+						localStorage.setItem('pending_transaction',JSON.stringify(transaction));
+						$location.path('login');
 
-				}
-			});
+					}
+						else
+					{
+						$location.path('cart');
+					}
+
+				},function(error){
+					if ( error.statusText == "Unauthorized" )
+					{
+						localStorage.setItem('pending_transaction',JSON.stringify(transaction));
+						$location.path('login');
+
+					}
+				});
+			}
+
 		}
 
 		home.monitorChange = function(amount){
@@ -234,12 +261,12 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		cart.processCard = function(cardInfo){
 
-			//var invalidList = stripeManager.validateCardDetails(cardInfo);
-			//if ( invalidList.length == 0 ) {
+			var invalidList = stripeManager.validateCardDetails(cardInfo);
+			if ( invalidList.length == 0 ) {
 
 				stripeManager.createToken(cardInfo);
 
-			//}
+			}
 		}
 
 
@@ -451,7 +478,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 
 	}])
-	.controller('UserController',['$scope','$window','$state','$stateParams','userManager','questionManager','orderManager','paramManager','authService',function($scope,$window,$state,$stateParams,userManager,questionManager,orderManager,paramManager,authService)
+	.controller('UserController',['$scope','$window','$state','$stateParams','userManager','questionManager','orderManager','paramManager','transactionManager','authService',function($scope,$window,$state,$stateParams,userManager,questionManager,orderManager,paramManager,transactionManager,authService)
 	{
 
 		var user = this;
@@ -475,6 +502,44 @@ var nalipaControllers = angular.module('nalipaControllers', [])
             });
         }
 
+		user.completeAirTime = function(transaction,authenicatedUser){
+
+
+				transaction.user_id = authenicatedUser.id;
+				transactionManager.addTransaction(transaction).then(function(response){
+
+				},function(error){
+
+				});
+
+		}
+
+		user.completeBills = function(transaction,authenicatedUser){
+
+				transaction.user_id = authenicatedUser.id;
+				transactionManager.addTransaction(transaction).then(function(response){
+
+				},function(error){
+
+				});
+
+
+		}
+
+		// this function get executed when user order without login in
+		user.completeShopping = function(authenicatedUser){
+
+			var transaction = eval('('+localStorage.getItem('raw_transaction')+')');
+
+			if (transaction.type == 'airtime') {
+				user.completeAirTime(transaction,authenicatedUser);
+			}
+
+			if (transaction.type == 'bill') {
+				user.completeBills(transaction,authenicatedUser);
+			}
+		}
+
 		user.authenicateUser = function(credentials){
 			user.message = {isPositive:false,body:"",show:false};
 			if ( typeof credentials != 'undefined' && checkIfCredentialsSupplied(credentials)) {
@@ -486,13 +551,14 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 						user.message.body = "User logged in successfully";
 						user.message.show = true;
 						if (localStorage.getItem('unAuthorizedState')){
-
+							user.completeShopping(authenicatedUser);
 							setTimeout(function() {
 								$scope.$parent.$parent.main.authenicatedUser = authenicatedUser;
 								$state.go(localStorage.getItem('unAuthorizedState'));
 							}, 3000);
 
 						}else{
+							user.completeShopping(authenicatedUser);
 							setTimeout(function() {
 								$scope.$parent.$parent.main.authenicatedUser = authenicatedUser;
 								$state.go('home');

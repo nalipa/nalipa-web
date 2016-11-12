@@ -69,7 +69,7 @@ nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q,$
         addTransaction: function (transaction) {
             var deferred = $q.defer();
             $http.post(API_BASE_URL + '/transactions', transaction).then(function (result) {
-                deferred.resolve();
+                deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
             });
@@ -78,8 +78,8 @@ nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q,$
         updateTransaction: function (transaction, transaction_id) {
             var defer = $q.defer();
 
-            $http.put(API_BASE_URL + '/transactions/' + transaction_id, transaction).then(function (data) {
-                defer.resolve();
+            $http.put(API_BASE_URL + '/transactions/' + transaction_id, transaction).then(function (result) {
+                defer.resolve(result);
             }, function (error) {
                 defer.reject(error);
             });
@@ -449,20 +449,20 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             return this.invalidList;
         },
         createToken: function (cardDetails) {
-            //stripe.card.createToken(
-            //    {
-            //        number: cardDetails.card_number,
-            //        cvc: cardDetails.cvc,
-            //        exp_month: cardDetails.expire_month,
-            //        exp_year: cardDetails.expire_year,
-            //        address_zip: cardDetails.zip
-            //    }
-            //).then(function (response) {
-            //    cardDetails.token = response.id;
-            //    cardDetails.amount = parseFloat(localStorage.getItem('totalAmount'));
-            //    stripeManager.chargeCustomer(cardDetails).then(function (results) {
-            //
-            //        if (results.statusText == "OK" && results.data) {
+            stripe.card.createToken(
+                {
+                    number: cardDetails.card_number,
+                    cvc: cardDetails.cvc,
+                    exp_month: cardDetails.expire_month,
+                    exp_year: cardDetails.expire_year,
+                    address_zip: cardDetails.zip
+                }
+            ).then(function (response) {
+                cardDetails.token = response.id;
+                cardDetails.amount = parseFloat(localStorage.getItem('totalAmount'));
+                stripeManager.chargeCustomer(cardDetails).then(function (results) {
+
+                    if (results.statusText == "OK" && results.data) {
                         selcomManager.rechargeCustomer().then(function(data){
 
                             angular.forEach(data,function(promiseObject){
@@ -479,15 +479,15 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
                             console.log('error',error);
                         });
                         //TODO:: take care of selcom  transaction
-                //    } else {
-                //
-                //    }
-                //    console.log('customer charges', results);
-                //}, function (error) {
-                //    console.log(error);
-                //});
-                //console.log('card token charges', response);
-            //})
+                    } else {
+
+                    }
+                    console.log('customer charges', results);
+                }, function (error) {
+                    console.log(error);
+                });
+                console.log('card token charges', response);
+            })
         },
         chargeCustomer: function (paymentInformation) {
             var defer = $q.defer();
