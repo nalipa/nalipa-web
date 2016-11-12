@@ -470,6 +470,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
                                 promiseObject.then(function(success){
                                     var x2js = new X2JS();
                                     var jsonObj = x2js.xml_str2json( success.data );
+                                    console.log(success.data);
                                 },function(failure){
                                     console.log(failure);
                                 })
