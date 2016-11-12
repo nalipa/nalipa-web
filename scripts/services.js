@@ -508,14 +508,11 @@ nalipaServices.factory('selcomManager', function ($http,API_BASE_URL, $q) {
         prepareOrdersForRecharge: function () {
             var availableOrders = eval('(' + localStorage.getItem('pendingTransaction') + ')');
             var preparedOrder = [];
-
+            console.log("AVAILABLE ORDERS",availableOrders);
             angular.forEach(availableOrders, function (data) {
 
                 var methodName = 'SELCOM.utilityPayment';
-                var vendorName = 'BIONICIT';
                 var utilityCode = data.service_provider.utility_code.utility_code;
-                var utilityRef = '0654298240';
-                var pinNumber = 965778;
                 var transactionId = 657;
                 var amount = data.amount;
                 var msisdn = data.account_number;
@@ -525,8 +522,6 @@ nalipaServices.factory('selcomManager', function ($http,API_BASE_URL, $q) {
                     {
                         utilityCode: utilityCode,
                         amount: amount,
-                        pinNumber:pinNumber,
-                        utilityRef:utilityRef,
                         transactionId:transactionId
                     }
                 );
