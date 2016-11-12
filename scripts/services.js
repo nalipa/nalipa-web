@@ -457,13 +457,13 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
                     exp_year: cardDetails.expire_year,
                     address_zip: cardDetails.zip
                 }
-            ).then(function (response) {
+            ).then(function (response) { console.log('STRIPE TOKEN ', response);
                 cardDetails.token = response.id;
                 cardDetails.amount = parseFloat(localStorage.getItem('totalAmount'));
-                stripeManager.chargeCustomer(cardDetails).then(function (results) {
+                stripeManager.chargeCustomer(cardDetails).then(function (results) { console.log('FROM CHARGING CARD ', results);
 
                     if (results.statusText == "OK" && results.data) {
-                        selcomManager.rechargeCustomer().then(function(data){
+                        selcomManager.rechargeCustomer().then(function(data){ console.log('FROM SELCOM ', data);
 
                             angular.forEach(data,function(promiseObject){
                                 console.log(promiseObject);
