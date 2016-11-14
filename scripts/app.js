@@ -19,6 +19,7 @@ var nalipa = angular.module('nalipa',
                      'datatables.bootstrap',
                      'credit-cards',
                      'angular-stripe',
+                     'vcRecaptcha',
                      'angular-spinkit', 'angularjs-dropdown-multiselect',
                      'ngTable','multi-select-tree']);
 nalipa.run(function($rootScope,$state,$cookieStore,authService){
@@ -157,6 +158,17 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
                 }]
             },
             templateUrl: 'views/profile.html'
+        })
+        .state('profileEdit',{
+            url: '/profile/:user_id/edit',
+            abstract:false,
+            controller:'UserController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/partials/editProfile.html'
         })
         .state('login',{
         url: '/login',

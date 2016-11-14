@@ -13,16 +13,16 @@ nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookie
         listOrders: function () {
             var deferred = $q.defer();
             $http.get(API_BASE_URL + '/orders').then(function (result) {
-                deferred.resolve();
+                deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
             });
             return deferred.promise;
         },
-        addOrder: function (order, parameters) {
+        addOrder: function (order) {
             var deferred = $q.defer();
-            $http.post(API_BASE_URL + '/orders', order, parameters).then(function (result) {
-                deferred.resolve();
+            $http.post(API_BASE_URL + '/orders', order).then(function (result) {
+                deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
             });
@@ -31,8 +31,8 @@ nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookie
         updateOrder: function (order, order_id) {
             var defer = $q.defer();
 
-            $http.put(DHIS2URL + '/orders/' + order_id, order).then(function (data) {
-                defer.resolve();
+            $http.put(DHIS2URL + '/orders/' + order_id, order).then(function (result) {
+                defer.resolve(result);
             }, function (error) {
                 defer.reject(error);
             });
@@ -41,11 +41,50 @@ nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookie
         deleteOrder: function (order_id) {
             var deferred = $q.defer();
             $http.delete(API_BASE_URL + '/orders/' + order_id).then(function (result) {
-                deferred.resolve();
+                deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
             });
             return deferred.promise;
+        },
+        prepareOrder:function(transaction,transactionAddResponse){
+            var order = {};
+            var utilitId = transaction.utility_code_id;
+            var utilityCodes = eval('('+localStorage.getItem('utilityCodes')+')');
+            angular.forEach(utilityCodes,function(utilityCode){
+                if ( utilityCode.id == utilitId )
+                {
+                    transaction.utility = utilityCode;
+                }
+            });
+
+            if ( transactionAddResponse.data )
+            {
+                transaction.id = transactionAddResponse.data.id;
+            }
+            else
+            {
+                transaction.id = transaction.user_id;
+            }
+
+            if (transaction.status.indexOf('PENDING')>=0)
+            {
+                transaction.status = "PENDING COMPLETION";
+            }
+            var currentRate = parseInt(localStorage.getItem('exchangeRate'));
+            order.user_id = transaction.user_id;
+            order.order_number = transaction.id;
+            order.status = transaction.status;
+            order.tzs_amount = transaction.amount;
+            order.exchange_rate = currentRate;
+            order.usd_amount = parseFloat(parseInt(transaction.amount)/currentRate).toFixed(2);
+            order.transaction_fee = "";
+            order.order_amount = transaction.amount;
+            order.stripe_customer = "";
+            order.stripe_charge = "";
+            order.stripe_amount = "";
+
+            return order;
         }
 
     }
@@ -131,7 +170,7 @@ nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL
         addUser: function (user) {
             var deferred = $q.defer();
             $http.post(API_BASE_URL + '/users', user).then(function (result) {
-                deferred.resolve();
+                deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
             });
@@ -141,15 +180,15 @@ nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL
             var defer = $q.defer();
 
             $http.put(API_BASE_URL + '/users/' + user_id, user).then(function (data) {
-                defer.resolve();
+                defer.resolve(data);
             }, function (error) {
                 defer.reject(error);
             });
             return defer.promise;
         },
-        deleteUser: function (order_id) {
+        deleteUser: function (user) {
             var deferred = $q.defer();
-            $http.delete(API_BASE_URL + '/users/' + user_id).then(function (result) {
+            $http.delete(API_BASE_URL + '/users/' + user.id).then(function (result) {
                 deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
@@ -196,6 +235,15 @@ nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL
             //    deferred.reject(error);
             //});
             //return deferred.promise;
+        },
+        contactUs: function(message){
+            var deferred = $q.defer();
+            $http.post(API_BASE_URL + '/mailUs',message).then(function (result) {
+                deferred.resolve(result);
+            }, function (error) {
+                deferred.reject(error);
+            });
+            return deferred.promise;
         }
 
 
@@ -449,7 +497,8 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             return this.invalidList;
         },
         createToken: function (cardDetails) {
-            stripe.card.createToken(
+            var deferred = $q.defer();
+            return stripe.card.createToken(
                 {
                     number: cardDetails.card_number,
                     cvc: cardDetails.cvc,
@@ -457,39 +506,53 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
                     exp_year: cardDetails.expire_year,
                     address_zip: cardDetails.zip
                 }
-            ).then(function (response) { console.log('STRIPE TOKEN ', response);
+            ).then(function (response) {
                 cardDetails.token = response.id;
                 cardDetails.amount = parseFloat(localStorage.getItem('totalAmount'));
-                stripeManager.chargeCustomer(cardDetails).then(function (results) { console.log('FROM CHARGING CARD ', results);
+                stripeManager.chargeCustomerCard(cardDetails).then(function (results) {
 
                     if (results.statusText == "OK" && results.data) {
-                        selcomManager.rechargeCustomer().then(function(data){ console.log('FROM SELCOM ', data);
 
-                            angular.forEach(data,function(promiseObject){
-                                console.log(promiseObject);
-                                promiseObject.then(function(success){
-                                    var x2js = new X2JS();
-                                    var jsonObj = x2js.xml_str2json( success.data );
-                                    console.log(success.data);
-                                },function(failure){
-                                    console.log(failure);
+                        if ( stripeManager.isRechargable(results.data) )
+                        {
+                            selcomManager.rechargeCustomerUtilityAccount().then(function(data){ console.log('FROM SELCOM ', data);
+                                var responseCounter = 0;
+                                angular.forEach(data,function(promiseObject){
+
+                                    promiseObject.then(function(success){
+                                        responseCounter++;
+                                        if (responseCounter>=data.length){
+                                            var stripeMessage = stripeManager.getMessage(results.data);
+                                            deferred.resolve(stripeMessage);
+                                        }
+
+                                    },function(failure){
+                                        console.log(failure);
+                                    })
                                 })
-                            })
-                        },function(error){
-                            console.log('error',error);
-                        });
+                            },function(error){
+                                console.log('error',error);
+                            });
+                        }
+                        else
+                        {
+                                var stripeMessage = stripeManager.getMessage(results.data);
+                            deferred.resolve(stripeMessage);
+                        }
+
                         //TODO:: take care of selcom  transaction
                     } else {
-
+                        deferred.resolve({message:"Process Could not complete try again later"});
                     }
-                    console.log('customer charges', results);
+
                 }, function (error) {
                     console.log(error);
                 });
-                console.log('card token charges', response);
+
+                return deferred.promise;
             })
         },
-        chargeCustomer: function (paymentInformation) {
+        chargeCustomerCard: function (paymentInformation) {
             var defer = $q.defer();
 
             $http.post(STRIPE_URL, paymentInformation).then(function (data) {
@@ -498,6 +561,35 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
                 defer.reject(error);
             });
             return defer.promise;
+        },
+        isRechargable:function(chargeObject){
+            if ( chargeObject.type )
+            {
+                // here is when charging failed
+                    return false;
+            }
+
+            if ( chargeObject.status )
+            {
+                // here is when either charging succeeded or there is custome error to check
+                if ( chargeObject.status == 'paid' )
+                {
+                    return true;
+                }
+            }
+
+        },
+        getMessage:function(chargeObject){
+            if ( chargeObject.type )
+            {
+                // here is when charging failed
+                return chargeObject.raw;
+            }
+
+            if ( chargeObject.status )
+            {
+                return chargeObject;
+            }
         }
     }
 
@@ -530,7 +622,7 @@ nalipaServices.factory('selcomManager', function ($http,API_BASE_URL, $q) {
             })
             return preparedOrder;
         },
-        rechargeCustomer: function () {
+        rechargeCustomerUtilityAccount: function () {
             var paymentInformations = selcomManager.prepareOrdersForRecharge();
             var httpCalls = [];
             angular.forEach(paymentInformations, function (paymentInformation) {
@@ -551,4 +643,47 @@ nalipaServices.factory('selcomManager', function ($http,API_BASE_URL, $q) {
     }
 
     return selcomManager;
+});
+nalipaServices.factory('utilityCodeManager',function($http,API_BASE_URL, $q){
+    var utilityCodeManager = {
+        listUtilities: function () {
+            var deferred = $q.defer();
+            $http.get(API_BASE_URL + '/utilityCodes').then(function (result) {
+                deferred.resolve(result);
+            }, function (error) {
+                deferred.reject(error);
+            });
+            return deferred.promise;
+        },
+        addUtility: function (utility) {
+            var deferred = $q.defer();
+            $http.post(API_BASE_URL + '/utilityCodes', utility).then(function (result) {
+                deferred.resolve(result);
+            }, function (error) {
+                deferred.reject(error);
+            });
+            return deferred.promise;
+        },
+        updateUtility: function (utility, utility_id) {
+            var defer = $q.defer();
+
+            $http.put(DHIS2URL + '/utilityCodes/' + utility_id, utility).then(function (result) {
+                defer.resolve(result);
+            }, function (error) {
+                defer.reject(error);
+            });
+            return defer.promise;
+        },
+        deleteUtility: function (utility_id) {
+            var deferred = $q.defer();
+            $http.delete(API_BASE_URL + '/utilityCodes/' + utility_id).then(function (result) {
+                deferred.resolve(result);
+            }, function (error) {
+                deferred.reject(error);
+            });
+            return deferred.promise;
+        }
+
+    }
+    return utilityCodeManager;
 });

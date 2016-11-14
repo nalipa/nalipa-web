@@ -13,11 +13,13 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			main.authenicatedUser = eval('('+$cookieStore.get('user')+')');
 		}
 
+		localStorage.setItem('exchangeRate',2240);
+		localStorage.setItem('transactionFee',10);
 
 		return main;
 
 	}])
-	.controller('HomeController',['$scope','$location','orderManager','serviceProviderManager','amountManager','transactionManager','authService',function($scope,$location,orderManager,serviceProviderManager,amountManager,transactionManager,authService)
+	.controller('HomeController',['$scope','$location','orderManager','serviceProviderManager','amountManager','transactionManager','authService','utilityCodeManager',function($scope,$location,orderManager,serviceProviderManager,amountManager,transactionManager,authService,utilityCodeManager)
 	{
 		var home = this;
 		home.activateAirtime = 'active';
@@ -54,11 +56,21 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 					home.showAirSpinner = false;
 					if (response && response.statusText == "Unauthorized" )
 					{
+						orderManager.addOrder(orderManager.prepareOrder(transaction,response),function(orderResponse){
+
+						},function(){
+
+						});
 						localStorage.setItem('pending_transaction',JSON.stringify(transaction));
 						$location.path('login');
 
 					}
 					else{
+						orderManager.addOrder(orderManager.prepareOrder(transaction,response),function(orderResponse){
+
+						},function(){
+
+						});
 						$location.path('cart');
 					}
 				},function(error){
@@ -93,12 +105,22 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 					home.showBillSpinner = false;
 						if ( response.statusText == "Unauthorized" )
 					{
+						orderManager.addOrder(orderManager.prepareOrder(transaction,response),function(orderResponse){
+
+						},function(){
+
+						});
 						localStorage.setItem('pending_transaction',JSON.stringify(transaction));
 						$location.path('login');
 
 					}
 						else
 					{
+						orderManager.addOrder(orderManager.prepareOrder(transaction,response),function(orderResponse){
+
+						},function(){
+
+						});
 						$location.path('cart');
 					}
 
@@ -151,6 +173,16 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		});
 
+		utilityCodeManager.listUtilities().then(function(result){
+			if ( result.statusText == "OK" && result.data)
+			{
+				localStorage.removeItem('utilityCodes');
+				localStorage.setItem('utilityCodes',JSON.stringify(result.data));
+			}
+		},function(error){
+
+		});
+
 		return home;
 
 	}]).controller('WorkController',['$scope',function($scope)
@@ -161,12 +193,30 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 	.controller('CartController',['$scope','$location','$stateParams','$filter','transactionManager','countryManager','serviceProviderManager','amountManager','stripeManager','selcomManager','authService','userManager',function($scope,$location,$stateParams,$filter,transactionManager,countryManager,serviceProviderManager,amountManager,stripeManager,selcomManager,authService,userManager)
 	{
 		var cart = this;
-		cart.currentRate = 2240;
+
+		cart.getCurrentExchangeRate = function(){
+			if (localStorage.getItem('exchangeRate')){
+				return parseInt(localStorage.getItem('exchangeRate'))
+			} else {
+				return 2240;
+			}
+
+		}
+		cart.getCurrentTransactionFee = function(){
+			if (localStorage.getItem('transactionFee')){
+				return parseInt(localStorage.getItem('transactionFee'))
+			} else {
+				return 10;
+			}
+
+		}
+
+		cart.currentRate = cart.getCurrentExchangeRate();
 		cart.transactions = [];
 		cart.totalAmountShoppend = 0;
 		cart.currentExchangeRate = "$1 = TZS "+cart.currentRate;
 		cart.amountInUS = 0;
-		cart.transactionFee = 10;
+		cart.transactionFee = cart.getCurrentTransactionFee();
 		cart.totalAfterEverything = 0;
 		cart.countries = [];
 
@@ -177,6 +227,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		cart.propertyName = 'recipient';
 		cart.reverse = false;
+
 
 		cart.listTransactions = function(){
 
@@ -259,12 +310,32 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			$location.path('card-details');
 		}
 
-		cart.processCard = function(cardInfo){
 
+		cart.processCard = function(cardInfo){
+			cart.responseObject = {};
+			cart.responseObject.message = "";
+			cart.responseObject.alert = "";
+			cart.finalResponse = false;
 			var invalidList = stripeManager.validateCardDetails(cardInfo);
 			if ( invalidList.length == 0 ) {
+				cart.showPaySpinner = true;
+				stripeManager.createToken(cardInfo).then(function(resultFromProcess){
 
-				stripeManager.createToken(cardInfo);
+					if ( resultFromProcess.status )
+					{
+						cart.responseObject.alert = "alert-success";
+						cart.responseObject.message = resultFromProcess.description
+					}
+					else
+					{
+						cart.cardInfo = {};
+						cart.responseObject.message = resultFromProcess.message;
+						cart.responseObject.alert = "alert-danger";
+					}
+
+					cart.finalResponse = true;
+					cart.showPaySpinner = false;
+				});
 
 			}
 		}
@@ -367,9 +438,23 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		return cart;
 
 	}])
-	.controller('OrderController',['$scope',function($scope)
+	.controller('OrderController',['$scope','orderManager',function($scope,orderManager)
 	{
+		var order = this;
 
+		order.orders = [];
+
+		orderManager.listOrders().then(function(result){
+			if ( result.statusText == "OK" )
+			{
+				order.orders = result.data;
+			}
+
+		},function(error){
+
+		})
+
+		return order;
 
 	}])
 	.controller('FAQsController',['$scope',function($scope)
@@ -468,22 +553,92 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		$scope.panels.activePanel = 0;
 
 	}])
-	.controller('ContactsController',['$scope',function($scope)
+	.controller('ContactsController',['$scope','userManager','vcRecaptchaService',function($scope,userManager,vcRecaptchaService)
 	{
+		var contact = this;
+		contact.messageContact = {};
 
+		contact.contactUs = function(messageContact){
+			console.log(messageContact);
+			userManager.contactUs().then(function(result){
 
+				if ( result.statusText == "OK" && result.data )
+				{
+					contact.messageContact = {};
+				}
+
+			},function(error){
+
+			})
+		}
+
+		var apiKey = "6LeP8AsUAAAAAOOoY2h2FG2wJkN1eX9bA41jlzBH";
+
+		console.log("this is your app's controller");
+		contact.response = null;
+		contact.widgetId = null;
+
+		contact.model = {
+			key: apiKey
+		};
+
+		contact.setResponse = function (response) {
+			console.info('Response available');
+
+			contact.response = response;
+		};
+
+		contact.setWidgetId = function (widgetId) {
+			console.info('Created widget ID: %s', widgetId);
+
+			contact.widgetId = widgetId;
+		};
+
+		contact.cbExpiration = function() {
+			console.info('Captcha expired. Resetting response object');
+
+			vcRecaptchaService.reload(contact.widgetId);
+
+			contact.response = null;
+		};
+
+		$scope.submit = function () {
+			var valid;
+
+			/**
+			 * SERVER SIDE VALIDATION
+			 *
+			 * You need to implement your server side validation here.
+			 * Send the reCaptcha response to the server and use some of the server side APIs to validate it
+			 * See https://developers.google.com/recaptcha/docs/verify
+			 */
+			console.log('sending the captcha response to the server', $scope.response);
+
+			if (valid) {
+				console.log('Success');
+			} else {
+				console.log('Failed validation');
+
+				// In case of a failed validation you need to reload the captcha
+				// because each response can be checked just once
+				vcRecaptchaService.reload($scope.widgetId);
+			}
+		};
+
+		return contact;
 	}])
 	.controller('SettingsController',['$scope',function($scope)
 	{
 
 
 	}])
-	.controller('UserController',['$scope','$window','$state','$stateParams','userManager','questionManager','orderManager','paramManager','transactionManager','authService',function($scope,$window,$state,$stateParams,userManager,questionManager,orderManager,paramManager,transactionManager,authService)
+	.controller('UserController',['$scope','$window','$state','$stateParams','$cookieStore','$location','userManager','questionManager','orderManager','paramManager','transactionManager','authService',function($scope,$window,$state,$stateParams,$cookieStore,$location,userManager,questionManager,orderManager,paramManager,transactionManager,authService)
 	{
 
 		var user = this;
 
 		user.profileDetails = {};
+
 
 		user.securityQuestions = [];
 		questionManager.listQuestions().then(function(result){
@@ -493,15 +648,45 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		})
 
 
-
         user.registerUser = function(user){
-
+			user.register.alertBody = {};
             userManager.addUser(user).then(function(result){
+				if ( result.statusText=="OK" && result.data)
+				{
+					user.register = {};
+					user.alertBody = {alert:'alert-success',isShown:true,message:"User registered successful"};
+				}
+				else{
+					user.alertBody = {alert:'alert-danger',isShown:true,message:"User registration failed"};
+				}
+
             },function(error){
 
             });
         }
 
+		user.updateUser = function(user){
+
+			userManager.updateUser(user,user.id).then(function(result){
+				if ( result.statusText=="OK" && result.data)
+				{
+
+					//user.register.alertBody.alert='alert-success';
+					//user.register.alertBody.isShown = true;
+					//user.register.alertBody.message="Profile updated successful";
+
+					$location.path('profile/'+user.id);
+				}
+				else{
+
+					//user.register.alertBody.alert='alert-danger';
+					//user.register.alertBody.isShown = true;
+					//user.register.alertBody.message="Profile update failed";
+				}
+			},function(error){
+
+			})
+		}
 		user.completeAirTime = function(transaction,authenicatedUser){
 
 
@@ -624,9 +809,26 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			}
 		}
 
+
+		user.deleteAccount = function(profile){
+			userManager.deleteUser(profile.id).then(function(result){
+				authService.logout().then(function(response){
+					localStorage.removeItem('authenicatedUser');
+					localStorage.removeItem('pending_order');
+					localStorage.removeItem('totalAmount');
+					localStorage.removeItem('pendingTransaction');
+					localStorage.removeItem('editTransaction');
+					user.$parent.main.authenicatedUser = "";
+					$state.go('home');
+				})
+			},function(error){
+
+			})
+		}
+
 		if ($stateParams) {
 
-
+			user.register = {};
 			if ( $stateParams.user_id )
 			{
 				userManager.getUserById($stateParams.user_id).then(function(data){
@@ -634,6 +836,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 					if ( data.statusText == "OK" )
 					{
 						user.profileDetails = data.data;
+						user.register = user.profileDetails;
 					}
 				},function(error){
 

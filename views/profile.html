@@ -2,6 +2,64 @@
     <div class="col-md-12 col-sm-12 col-lg-12">
         <p><h4 style="text-align: center;">My Profile</h4></p>
         <br/>
-        {{user.profileDetails}}
+
+        <table class="table table-bordered table-responsive table-hover">
+            <tr >
+                <th>First Name</th>
+                <td>{{user.profileDetails.first_name}}</td>
+            </tr>
+
+            <tr >
+                <th>Middle Name</th>
+                <td>{{user.profileDetails.middle_name}}</td>
+            </tr>
+
+            <tr >
+                <th>Last Name</th>
+                <td>{{user.profileDetails.last_name}}</td>
+            </tr>
+
+            <tr >
+                <th>Phone Number</th>
+                <td>{{user.profileDetails.phone_number}}</td>
+            </tr>
+
+            <tr >
+                <th>Alt. Phone Number</th>
+                <td>{{user.profileDetails.alt_phone_number}}</td>
+            </tr>
+
+            <tr >
+                <th>Email</th>
+                <td>{{user.profileDetails.email}}</td>
+            </tr>
+
+            <tr >
+                <th>Address</th>
+                <td>{{user.profileDetails.address}}</td>
+            </tr>
+
+            <tr >
+                <th>City/Town</th>
+                <td>{{user.profileDetails.city_town}}</td>
+            </tr>
+
+            <tr >
+                <th>Country</th>
+                <td>{{user.profileDetails.country}}</td>
+            </tr>
+
+        </table>
+        <br/>
+        <div class="row">
+            <div class="col-md-6">
+                <a class="btn btn-warning " href="#/profile/{{user.profileDetails.id}}/edit">Edit Account</a>
+            </div>
+            <div class="col-md-6">
+                <a class="btn btn-danger pull-right" ng-click="user.deleteAccount(user.profileDetails)" style="width:150px!important;" title="Remove this account completely">Delete Account&nbsp;</a>
+            </div>
+
+        </div>
+
     </div>
 </div>

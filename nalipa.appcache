@@ -25,6 +25,7 @@ CACHE:
  scripts/vendors/angular/angular-touch.min.js
 
  scripts/vendors/angular-local-storage/dist/angular-local-storage.min.js
+ //www.google.com/recaptcha/api.js?render=explicit&onload=vcRecaptchaApiLoaded
 
  scripts/vendors/smart-table/ng-table.min.css
  scripts/vendors/smart-table/ng-table.min.js
