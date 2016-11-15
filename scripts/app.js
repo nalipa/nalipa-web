@@ -170,6 +170,24 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             },
             templateUrl: 'views/partials/editProfile.html'
         })
+        .state('about-us',{
+            url: '/about-us',
+            abstract:false,
+            controller:'UserController',
+            templateUrl: 'views/partials/about-us.html'
+        })
+        .state('term-of-service',{
+            url: '/term-of-service',
+            abstract:false,
+            controller:'UserController',
+            templateUrl: 'views/partials/term-of-service.html'
+        })
+        .state('privacy',{
+            url: '/privacy',
+            abstract:false,
+            controller:'UserController',
+            templateUrl: 'views/partials/privacy.html'
+        })
         .state('login',{
         url: '/login',
         controller:'UserController',

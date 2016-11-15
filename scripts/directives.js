@@ -49,3 +49,24 @@ nalipaDirectives.directive('nalipaTopHeader', function(authService,$state,$windo
 
     };
 });
+nalipaDirectives.directive('nalipaBottomHeader',function(authService,$state,$window) {
+    var controller = ['$scope',function ($scope) {
+
+
+
+    }];
+
+
+    return {
+        scope: {
+            user: '=',
+            options: '='
+        },
+        controller: controller,
+        templateUrl: 'views/directives/nalipa-bottom-header.html',
+        link: function(scope, elem, attrs) {
+
+        }
+
+    };
+})

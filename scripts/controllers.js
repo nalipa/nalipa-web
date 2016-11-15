@@ -559,8 +559,29 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		contact.messageContact = {};
 
 		contact.contactUs = function(messageContact){
-			console.log(messageContact);
-			userManager.contactUs().then(function(result){
+
+				var valid;
+
+				/**
+				 * SERVER SIDE VALIDATION
+				 *
+				 * You need to implement your server side validation here.
+				 * Send the reCaptcha response to the server and use some of the server side APIs to validate it
+				 * See https://developers.google.com/recaptcha/docs/verify
+				 */
+
+				if (!valid) {
+					console.log('Success');
+				} else {
+					console.log('Failed validation');
+
+					// In case of a failed validation you need to reload the captcha
+					// because each response can be checked just once
+					vcRecaptchaService.reload($scope.widgetId);
+				}
+
+			//console.log(messageContact);
+			userManager.contactUs(messageContact).then(function(result){
 
 				if ( result.statusText == "OK" && result.data )
 				{
@@ -574,7 +595,6 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		var apiKey = "6LeP8AsUAAAAAOOoY2h2FG2wJkN1eX9bA41jlzBH";
 
-		console.log("this is your app's controller");
 		contact.response = null;
 		contact.widgetId = null;
 
@@ -589,41 +609,18 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		};
 
 		contact.setWidgetId = function (widgetId) {
-			console.info('Created widget ID: %s', widgetId);
 
 			contact.widgetId = widgetId;
 		};
 
 		contact.cbExpiration = function() {
-			console.info('Captcha expired. Resetting response object');
 
 			vcRecaptchaService.reload(contact.widgetId);
 
 			contact.response = null;
 		};
 
-		$scope.submit = function () {
-			var valid;
 
-			/**
-			 * SERVER SIDE VALIDATION
-			 *
-			 * You need to implement your server side validation here.
-			 * Send the reCaptcha response to the server and use some of the server side APIs to validate it
-			 * See https://developers.google.com/recaptcha/docs/verify
-			 */
-			console.log('sending the captcha response to the server', $scope.response);
-
-			if (valid) {
-				console.log('Success');
-			} else {
-				console.log('Failed validation');
-
-				// In case of a failed validation you need to reload the captcha
-				// because each response can be checked just once
-				vcRecaptchaService.reload($scope.widgetId);
-			}
-		};
 
 		return contact;
 	}])

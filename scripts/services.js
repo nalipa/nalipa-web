@@ -7,7 +7,8 @@
 var nalipaServices = angular.module('nalipaServices', ['ngResource'])
     .value('API_BASE_URL', location.origin+'/nalipa/public/index.php/api')
     .value('BASE_AUTH_URL', location.origin+'/nalipa/public/index.php')
-    .value('STRIPE_URL', location.origin+':8080/stripe/payment');
+    .value('STRIPE_URL', location.origin+':8080/stripe/payment')
+    .value('MAIL_URL', location.origin+':8080/mailUs');
 nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookieStore) {
     var orderManager = {
         listOrders: function () {
@@ -146,7 +147,7 @@ nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q,$
 
     return transactionManager;
 });
-nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL, BASE_AUTH_URL, $q) {
+nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL, BASE_AUTH_URL,MAIL_URL, $q) {
     var userManager = {
 
         getUserById: function(user_id) {
@@ -237,8 +238,9 @@ nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL
             //return deferred.promise;
         },
         contactUs: function(message){
+            //console.log(message);
             var deferred = $q.defer();
-            $http.post(API_BASE_URL + '/mailUs',message).then(function (result) {
+            $http.post(MAIL_URL,message).then(function (result) {
                 deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
