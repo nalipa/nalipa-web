@@ -13,10 +13,10 @@
         </ul>
 
         <!-- Tab panes -->
-        <div class="tab-content">
+        <div class="tab-content" >
             <div role="tabpanel" class="tab-pane {{home.activateAirtime}}">
                 <br/>
-                <form class="form-horizontal" name="airtime" ng-submit="home.sendAirTime(home.airtime)" style="font-size: 10px;text-align: left">
+                <form class="form-horizontal" name="airtime" ng-submit="home.sendAirTime(home.airtime)" style="font-size: 12px;text-align: left">
                     <div class="form-group">
                         <label for="recipient_name" class="col-sm-4 control-label">Recipient's Name :</label>
                         <div class="col-sm-8">
@@ -82,7 +82,7 @@
             </div>
             <div role="tabpanel" class="tab-pane {{home.activateBill}}">
                 <br/>
-                <form class="form-horizontal" name="bill" ng-submit="home.payBills(home.bill)" style="font-size: 10px;text-align: left">
+                <form class="form-horizontal" name="bill" ng-submit="home.payBills(home.bill)" style="font-size: 12px;text-align: left">
                     <div class="form-group">
                         <label for="recepient_name_bill" class="col-sm-4 control-label">Recipient's Name :</label>
                         <div class="col-sm-8">
@@ -118,8 +118,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="meter_account_number" class="col-sm-4 control-label">Meter or Account Number :
-                            :</label>
+                        <label for="meter_account_number" class="col-sm-4 control-label">Meter or Account Number :</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="meter_account_number"
                                    ng-model="home.bill.account_number"
