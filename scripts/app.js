@@ -169,6 +169,16 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             },
             templateUrl: 'views/settings.html'
         })
+        .state('transactionSettings',{
+            url: '/settings/transactions',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
+        })
         .state('systemSettings',{
             url: '/settings/system',
             controller:'SettingsController',

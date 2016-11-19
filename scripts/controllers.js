@@ -645,7 +645,8 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		settings.menus = [
 			{name:'Reports',url:'#/settings/reports',status:settings.getStatus('reports')},
 			{name:'Users',url:'#/settings/users',status:settings.getStatus('users')},
-			{name:'System Configurations',url:'#/settings/system',status:settings.getStatus('system')},
+			{name:'Transactions',url:'#/settings/transactions',status:settings.getStatus('transactions')},
+			{name:'System Configurations',url:'#/settings/system',status:settings.getStatus('system')}
 		];
 
 		settings.reports = {};
