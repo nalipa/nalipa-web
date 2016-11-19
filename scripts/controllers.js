@@ -316,6 +316,9 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			cart.responseObject.message = "";
 			cart.responseObject.alert = "";
 			cart.finalResponse = false;
+
+
+
 			var invalidList = stripeManager.validateCardDetails(cardInfo);
 			if ( invalidList.length == 0 ) {
 				cart.showPaySpinner = true;
@@ -624,9 +627,245 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		return contact;
 	}])
-	.controller('SettingsController',['$scope',function($scope)
+	.controller('SettingsController',['$scope','$stateParams','$location','reportService',function($scope,$stateParams,$location,reportService)
 	{
+		var settings = this;
 
+		settings.getStatus = function(statusPage){
+
+			if ($location.$$path.indexOf(statusPage)>=0){
+				settings.templateUrl = 'views/partials/settings-'+statusPage+'.html';
+				return "active";
+			} else  {
+
+				return "";
+			}
+		};
+
+		settings.menus = [
+			{name:'Reports',url:'#/settings/reports',status:settings.getStatus('reports')},
+			{name:'Users',url:'#/settings/users',status:settings.getStatus('users')},
+			{name:'System Configurations',url:'#/settings/system',status:settings.getStatus('system')},
+		];
+
+		settings.reports = {};
+
+		settings.reports.types = [
+			{name:'Transactions',id:'transactions',childrens:[]},
+			{name:'Orders',id:'orders',childrens:[]},
+		]
+
+		settings.reports.reportTypes = [
+			{name:'Table',id:'table',status:'active'},
+			{name:'Bar Chart',id:'bar',status:''},
+			{name:'Column Chart',id:'column',status:''},
+			{name:'Line Chart',id:'line',status:''},
+			{name:'Pie Chart',id:'pie',status:''},
+		]
+
+		settings.reports.categories = [
+			{name:'All',children:null},
+			{name:'Utility Codes',children:[
+				{name:'TOP'},
+				{name:'LUKU'},
+				{name:'DAWASCO'},
+				{name:'DSTV'},
+				{name:'STARTIMES'},
+				{name:'ZUKU'},
+				{name:'AMCASHIN'},
+				{name:'TPCASHIN'},
+				{name:'VMCASHIN'},
+			]},
+			{name:'Product',children:[
+				{name:'AIRTIME'},
+				{name:'BILLS'}
+			]},
+			{name:'Service Providers',children:[
+				{name:'Vodacom'},
+				{name:'Airtel'},
+				{name:'Tigo'},
+				{name:'Zantel'},
+				{name:'LUKU Prepaid Electricity'},
+				{name:'DAWASCO water and sewerage'},
+				{name:'DSTV Satellite Television'},
+				{name:'STARTIMES Terrestrial Television'},
+				{name:'ZUKU Television'},
+				{name:'Airtel Money'},
+				{name:'Tigo Pesa'},
+				{name:'Vodacom M-pesa'}
+			]}
+		]
+
+		settings.reports.selectedReportType = 'table';
+		settings.reports.selectedType = 'transactions';
+		settings.reports.selectedCategory = settings.reports.categories[0];
+		settings.reports.selectedPeriodType = 'Monthly';
+		settings.reports.selectedYear = 2016;
+		settings.reports.selectedMonth = '01';
+		settings.reports.showChart = false;
+		settings.reports.showTable = true;
+		settings.reports.chartType = 'column';
+		settings.reports.title = settings.reports.selectedType + " by " + settings.reports.selectedCategory.name +' '+ settings.reports.selectedYear;
+
+		settings.getYears = function(){
+			var date = new Date();
+			var fullYear = date.getFullYear();
+
+			var years = [];
+
+			while(years.length<10){
+				years.push(fullYear);
+				fullYear--;
+
+			}
+
+			return years;
+		};
+
+		settings.checkForParameters = function(){
+			if ( !settings.reports.selectedType ||  !settings.reports.selectedCategory ||  !settings.reports.selectedPeriodType ||  !settings.reports.selectedYear )
+			{
+
+
+				return false;
+			}
+
+			if ( settings.reports.selectedPeriodType=="Monthly" && !settings.reports.selectedMonth )
+			{
+				return false;
+			}
+			return true;
+		}
+
+		settings.drawChart = function(){
+			settings.chartConfig = {
+
+				options: {
+					//This is the Main Highcharts chart config. Any Highchart options are valid here.
+					//will be overriden by values specified below.
+					chart: {
+						type: ''
+					},
+					tooltip: {
+						style: {
+							padding: 10,
+							fontWeight: 'bold'
+						}
+					}
+				},
+				//The below properties are watched separately for changes.
+
+				//Series object (optional) - a list of series using normal Highcharts series options.
+				series: [{
+					data: [10, 15, 12, 8, 7]
+				}],
+				//Title configuration (optional)
+				title: {
+					text: 'Yes'
+				},
+				//Boolean to control showing loading status on chart (optional)
+				//Could be a string if you want to show specific loading text.
+				loading: false,
+				//Configuration for the xAxis (optional). Currently only one x axis can be dynamically controlled.
+				//properties currentMin and currentMax provided 2-way binding to the chart's maximum and minimum
+				xAxis: {
+					currentMin: 0,
+					currentMax: 20,
+					title: {text: 'values'}
+				},
+				//Whether to use Highstocks instead of Highcharts (optional). Defaults to false.
+				useHighStocks: false,
+				//size (optional) if left out the chart will default to size of the div or something sensible.
+				size: {
+					width: 750,
+					height: 300
+				},
+				//function (optional)
+				func: function (chart) {
+					//setup some logic for the chart
+
+				}
+			};
+			settings.chartConfig.options.chart.type=settings.reports.chartType;
+			settings.chartConfig.title.text=settings.reports.title;
+			console.log(settings.chartConfig);
+		}
+
+		settings.changeReportType = function(reportType){
+
+			angular.forEach(settings.reports.reportTypes,function(value,index){
+				settings.reports.reportTypes[index].status='';
+				if ( settings.reports.reportTypes[index].id ==  reportType.id ){
+					settings.reports.reportTypes[index].status='active';
+					settings.reports.selectedReportType = settings.reports.reportTypes[index].name;
+				}
+			})
+
+			if (reportType == 'table' || reportType.name == 'Table'){
+				settings.reports.showChart = false;
+				settings.reports.showTable = true;
+			}else{
+				settings.reports.showChart = true;
+				settings.reports.showTable = false;
+				settings.reports.chartType = reportType.id;
+				settings.drawChart();
+			}
+
+
+
+		}
+
+		settings.getReport = function(){
+			if ( settings.checkForParameters() )
+			{
+				settings.showChartSelection = true;
+				reportService.getDataFromApiSource(settings.reports.selectedType).then(function(result){
+
+
+						var preparedData = 	reportService.prepareData(
+							result.data,
+							settings.reports.selectedType,
+							settings.reports.selectedCategory,
+							settings.reports.selectedYear,
+							settings.reports.selectedMonth,
+							settings.reports.selectedReportType
+						);
+
+					if ( settings.reports.selectedReportType == 'table' ){
+							settings.reports.chartData = null;
+							settings.reports.tableData = preparedData;
+						settings.changeReportType(settings.reports.selectedReportType)
+						}
+					else
+						{
+							settings.reports.chartData = preparedData;
+							settings.reports.tableData = null;
+							settings.changeReportType(settings.reports.selectedReportType)
+						}
+
+
+
+				},
+				function(error){
+					console.log(error)
+				});
+
+
+			}
+
+			else
+
+			{
+				settings.showChartSelection = false;
+			}
+
+		}
+
+		settings.reports.years = settings.getYears();
+
+		settings.getReport();
+
+		return settings;
 
 	}])
 	.controller('UserController',['$scope','$window','$state','$stateParams','$cookieStore','$location','userManager','questionManager','orderManager','paramManager','transactionManager','authService',function($scope,$window,$state,$stateParams,$cookieStore,$location,userManager,questionManager,orderManager,paramManager,transactionManager,authService)

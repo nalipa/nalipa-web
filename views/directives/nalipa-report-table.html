@@ -1,0 +1,23 @@
+<div>
+    <table class="table table-responsive table-responsive table-hover">
+        <thead>
+            <th>Account Number</th>
+            <th>Utility</th>
+            <th>Product</th>
+            <th>Vendor</th>
+            <th>Status</th>
+            <th>Transaction Date</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="result in data">
+                <td>{{result.account_number}}</td>
+                <td>{{result.service_provider.utility_code.utility_code}}</td>
+                <td>{{result.service_provider.product}}</td>
+                <td>{{result.service_provider.name}}</td>
+                <td>{{result.status}}</td>
+                <td>{{result.transaction_date}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+

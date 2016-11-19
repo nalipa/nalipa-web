@@ -607,7 +607,7 @@ nalipaServices.factory('selcomManager', function ($http,API_BASE_URL, $q) {
 
                 var methodName = 'SELCOM.utilityPayment';
                 var utilityCode = data.service_provider.utility_code.utility_code;
-                var transactionId = 657;
+                var transactionId = data.id;
                 var amount = data.amount;
                 var msisdn = data.account_number;
 
@@ -688,4 +688,43 @@ nalipaServices.factory('utilityCodeManager',function($http,API_BASE_URL, $q){
 
     }
     return utilityCodeManager;
+});
+nalipaServices.factory('reportService', function($http,API_BASE_URL,$q,transactionManager,orderManager){
+    var reportService = {
+        data:[],
+        prepareData:function(data,type,category,year,month,chartType){
+            reportService.data = data;
+            if ( chartType == 'table' )
+            {
+                return reportService.prepareTableData(reportService.data,year,month);
+            } else{
+                return reportService.prepareChartData(reportService.data,year,month,type);
+            }
+
+        },
+        getDataFromApiSource:function(type){
+
+            if (type=="transactions")
+            {
+                return transactionManager.listTransactions();
+            }
+
+            if (type=="orders")
+            {
+                return orderManager.listOrders();
+            }
+        },
+        prepareTableData:function(data,year,month,type){
+            var tableArray = [];
+            angular.forEach(data,function(rowValue,rowIndex){
+                tableArray.push(rowValue);
+            })
+            return tableArray;
+        },
+        prepareChartData:function(data,year,month,type){
+
+        }
+    }
+
+    return reportService;
 });

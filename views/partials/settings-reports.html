@@ -1,0 +1,110 @@
+<div>
+    <p style="font-weight: bold;font-size: 14px;"></p>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Nalipa Report Viewer</div>
+    </div>
+    <div id="criteria" class="row">
+        <div class="col-md-3" style="padding-left: 0px!important;">
+            <form>
+                <div class="form-group">
+                    <label for="report_type">Report Type</label>
+                    <select type="text" id="report_type" class="form-control" ng-model="settings.reports.selectedType"  ng-options="type.id as type.name for  type in settings.reports.types">
+                        <option value="">
+                        Select Type
+                        </option>
+                    </select>
+                </div>
+            </form>
+            <form>
+                <div class="form-group">
+                    <label for="category">&nbsp;</label>
+                    <button type="button" class="btn btn-success" ng-click="settings.getReport()">Get Report</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3">
+            <form>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select type="text" id="category" class="form-control" ng-model="settings.reports.selectedCategory" ng-options="category as category.name for  category in settings.reports.categories" >
+                        <option value=""  ng-disabled="true">
+                            Select Category
+                        </option>
+                    </select>
+                </div>
+            </form>
+
+            <form>
+                <div class="form-group">
+                    <label for="selected_category">&nbsp;</label>
+                    <select type="text" id="selected_category" ng-if="settings.reports.selectedCategory.children" class="form-control" ng-model="settings.reports.selectedCategoryName" ng-options="selectedCategory.name as selectedCategory.name for  selectedCategory in settings.reports.selectedCategory.children" >
+                        <option value="" ng-disabled="true">
+                            Select Category Name
+                        </option>
+                    </select>
+                </div>
+            </form>
+
+        </div>
+        <div class="col-md-3">
+            <form>
+                <div class="form-group">
+                    <label for="period_id">Period Type</label>
+                    <select type="text" class="form-control"  ng-model="settings.reports.selectedPeriodType" id="period_id" >
+                        <option value=""  ng-disabled="true">Select Period Type</option>
+                        <option>Yearly</option>
+                        <option>Monthly</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3" style="padding-right: 0px!important;">
+            <form>
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <select type="text" class="form-control" ng-model="settings.reports.selectedYear" ng-options="year as year for year in settings.reports.years" id="year" >
+                        <option value=""  ng-disabled="true">Select Year</option>
+                    </select>
+                </div>
+            </form>
+            <form ng-if="settings.reports.selectedPeriodType=='Monthly'">
+                <div class="form-group">
+                    <label for="month">Month</label>
+                    <select type="text" class="form-control" ng-model="settings.reports.selectedMonth" id="month" >
+                        <option value=""  ng-disabled="true">Select Month</option>
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="report">
+        <br/>
+        <nalipa-report-table ng-show="settings.reports.showTable" data="settings.reports.tableData"></nalipa-report-table>
+        <highchart  ng-show="settings.reports.showChart"  config="settings.chartConfig"></highchart>
+        <br/>
+    </div>
+    <div id="chartType">
+        <div class="btn-group" role="group" aria-label="...">
+            <button
+                    ng-if="settings.showChartSelection"
+                    type="button"
+                    ng-repeat="reportType in settings.reports.reportTypes"
+                    class="btn btn-success {{reportType.status}}"
+                    ng-click="settings.changeReportType(reportType)"
+            >{{reportType.name}}</button>
+        </div>
+    </div>
+</div>

@@ -64,7 +64,9 @@
                             <a class="btn btn-default " href="#/" type="button" title="continue shopping">KEEP SHOPPING</a>
                         </div>
                         <div class="col-md-6">
-                            <a style="float: right;" ng-click="cart.payForOrder()" style="cursor: pointer;"  class="btn btn-success " type="button" title="paying for order">PAY
+                            <a style="float: right;" ng-if="cart.totalAfterEverything > cart.transactionFee" ng-click="cart.payForOrder()" style="cursor: pointer;"  class="btn btn-success " type="button" title="paying for order">PAY
+                                FOR ORDER</a>
+                            <a style="float: right;" ng-if="cart.totalAfterEverything <= cart.transactionFee"  style="cursor: pointer;"  class="btn btn-default " type="button" title="paying for order" ng-disabled="true">PAY
                                 FOR ORDER</a>
                         </div>
                     </div>

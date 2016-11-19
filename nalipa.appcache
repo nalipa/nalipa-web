@@ -30,6 +30,8 @@ CACHE:
  scripts/vendors/smart-table/ng-table.min.css
  scripts/vendors/smart-table/ng-table.min.js
 
+ scripts/vendors/highcharts-ng/highcharts-ng.min.js
+
  scripts/vendors/tree/angular-multi-select-tree-0.1.0.min.css
  scripts/vendors/tree/angular-multi-select-tree-0.1.0.min.js
  scripts/vendors/tree/angular-multi-select-tree-0.1.0.tpl.js

@@ -1,0 +1,5 @@
+<div class="list-group">
+    <a  ng-repeat="menu in settingsMenus" ng-click="menuConfig(menu)" href="{{menu.url}}" class="list-group-item {{menu.status}}">
+        {{menu.name}}
+    </a>
+</div>

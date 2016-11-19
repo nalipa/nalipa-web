@@ -1,3 +1,29 @@
-<div style="min-height: 350px;">
+<div style="min-height: 350px;" class="row" ng-controller="SettingsController as settings">
+    <style>
+        .list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+            text-shadow: 0 -1px 0 #286090!important;
+            background-image: -webkit-linear-gradient(top,#416606 0,#556E2E 100%)!important;
+            background-image: -o-linear-gradient(top,#416606 0,#556E2E 100%)!important;
+            background-image: -webkit-gradient(linear,left top,left bottom,from(#416606),to(#556E2E))!important;
+            background-image: linear-gradient(to bottom,#416606 0,#556E2E 100%)!important;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff416606', endColorstr='#ff556E2E', GradientType=0)!important;
+            background-repeat: repeat-x!important;
+            border-color: #556E2E!important;
+        }
+        .list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+            z-index: 2;
+            color: #fff;
+            background-color: #416606;
+            border-color: #416606;
+        }
+    </style>
+    <div class="col-md-3">
+        <p>&nbsp;</p>
+        <nalipa-settings-left-menu settings-menus="settings.menus"></nalipa-settings-left-menu>
+    </div>
+
+    <div class="col-md-9">
+        <ng-include src="settings.templateUrl"></ng-include>
+    </div>
 
 </div>

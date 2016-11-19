@@ -69,4 +69,54 @@ nalipaDirectives.directive('nalipaBottomHeader',function(authService,$state,$win
         }
 
     };
-})
+});
+
+nalipaDirectives.directive('nalipaSettingsLeftMenu',function(authService,$state,$window) {
+    var controller = ['$scope',function ($scope) {
+
+
+
+    }];
+
+
+    return {
+        scope: {
+            settingsMenus: '='
+        },
+        controller: controller,
+        templateUrl: 'views/directives/nalipa-settings-left-menu.html',
+        link: function(scope, elem, attrs) {
+            scope.menuConfig = function(menu)
+            {
+                angular.forEach(scope.settingsMenus,function(value,index){
+                    scope.settingsMenus[index].status = "";
+                    if ( scope.settingsMenus[index].name == menu.name)
+                    {
+                        scope.settingsMenus[index].status = "active";
+                    }
+                })
+            }
+
+        }
+
+    };
+});
+nalipaDirectives.directive('nalipaReportTable',function(authService,$state,$window) {
+    var controller = ['$scope',function ($scope) {
+
+
+
+    }];
+
+    return {
+        scope: {
+            data: '='
+        },
+        controller: controller,
+        templateUrl: 'views/directives/nalipa-report-table.html',
+        link: function(scope, elem, attrs) {
+
+        }
+
+    };
+});

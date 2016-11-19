@@ -19,6 +19,7 @@ var nalipa = angular.module('nalipa',
                      'datatables.bootstrap',
                      'credit-cards',
                      'angular-stripe',
+                     'highcharts-ng',
                      'vcRecaptcha',
                      'angular-spinkit', 'angularjs-dropdown-multiselect',
                      'ngTable','multi-select-tree']);
@@ -148,6 +149,36 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             },
         templateUrl: 'views/settings.html'
     })
+        .state('reportSettings',{
+            url: '/settings/reports',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
+        })
+        .state('userSettings',{
+            url: '/settings/users',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
+        })
+        .state('systemSettings',{
+            url: '/settings/system',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
+        })
         .state('profile',{
             url: '/profile/:user_id',
             abstract:false,
@@ -187,6 +218,12 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             abstract:false,
             controller:'UserController',
             templateUrl: 'views/partials/privacy.html'
+        })
+        .state('forgot-password',{
+            url: '/forgot-password',
+            abstract:false,
+            controller:'UserController',
+            templateUrl: 'views/partials/forgot-password.html'
         })
         .state('login',{
         url: '/login',
