@@ -1,1 +1,145 @@
-<p>Transactions Page</p>
+<div>
+    <p style="font-weight: bold;font-size: 14px;"></p>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Nalipa Transactions</div>
+    </div>
+    <div class="row">
+        <div>
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="{{settings.activeClassArray['successful']}}">
+                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/successful')" aria-controls="/settings/transactions/successful" role="tab"  data-toggle="tab">Successful Transactions</a>
+                </li>
+                <li role="presentation" class="{{settings.activeClassArray['pending']}}">
+                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/pending')" aria-controls="/settings/transactions/pending" role="tab" data-toggle="tab">Pending Transactions</a>
+                </li>
+                <li role="presentation" class="{{settings.activeClassArray['failed']}}">
+                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/failed')" aria-controls="/settings/transactions/failed" role="tab" data-toggle="tab">Failed Transactions</a>
+                </li>
+                <li role="presentation" class="{{settings.activeClassArray['messages']}}">
+                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/messages')" aria-controls="/settings/transactions/messages" role="tab" data-toggle="tab">Customer Messages</a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane {{settings.activeClassArray['successful']}}" id="/settings/transactions/successful">
+                    <br/>
+                    <div >
+                        <table class="table table-hover table-responsive">
+                            <caption>There are  {{settings.successfulTransactions | countObjects}}  Successful Transactions</caption>
+                            <thead>
+                            <tr>
+                                <th>Transaction Id</th>
+                                <th>Recipient's Name</th>
+                                <th>Service Provider</th>
+                                <th>Account Number</th>
+                                <th>Amount (TZS)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="transaction in settings.successfulTransactions">
+                                <th scope="row">{{transaction.id}}</th>
+                                <td>{{transaction.recipient}}</td>
+                                <td>{{transaction.service_provider.name}}</td>
+                                <td>{{transaction.account_number}}</td>
+                                <td>{{transaction.amount}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane {{settings.activeClassArray['pending']}}" id="/settings/transactions/pending">
+                    <br/>
+                    <div >
+                        <table class="table table-hover table-responsive">
+                            <caption>There are  {{settings.pendingTransactions | countObjects}}  Pending Transactions</caption>
+                            <thead>
+                            <tr>
+                                <th>Transaction Id</th>
+                                <th>Recipient's Name</th>
+                                <th>Service Provider</th>
+                                <th>Account Number</th>
+                                <th>Amount (TZS)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="transaction in settings.pendingTransactions">
+                                <th scope="row">{{transaction.id}}</th>
+                                <td>{{transaction.recipient}}</td>
+                                <td>{{transaction.service_provider.name}}</td>
+                                <td>{{transaction.account_number}}</td>
+                                <td>{{transaction.amount}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane {{settings.activeClassArray['failed']}}" id="/settings/transactions/failed">
+                    <br/>
+                    <div >
+                        <table class="table table-hover table-responsive">
+                            <caption>There are {{settings.failedTransactions | countObjects}} Failed Transactions</caption>
+                            <thead>
+                            <tr>
+                                <th>Transaction Id</th>
+                                <th>Recipient's Name</th>
+                                <th>Service Provider</th>
+                                <th>Account Number</th>
+                                <th>Amount (TZS)</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="transaction in settings.failedTransactions">
+                                <th scope="row">{{transaction.id}}</th>
+                                <td>{{transaction.recipient}}</td>
+                                <td>{{transaction.service_provider.name}}</td>
+                                <td>{{transaction.account_number}}</td>
+                                <td>{{transaction.amount}}</td>
+                                <td><a class="alert-danger" title="Delete Failed Transacion" style="cursor: pointer">Delete</a>&nbsp;&nbsp;<a class="alert-info"  title="Notify Customer on Failed Transacion"  style="cursor: pointer">Notify</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane {{settings.activeClassArray['messages']}}" id="/settings/transactions/messages">
+                    <br/>
+                    <div >
+                        <table class="table table-hover table-responsive">
+                            <caption>Crients Feed Back</caption>
+                            <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Message</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

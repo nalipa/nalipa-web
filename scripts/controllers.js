@@ -627,7 +627,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		return contact;
 	}])
-	.controller('SettingsController',['$scope','$stateParams','$location','reportService','systemService',function($scope,$stateParams,$location,reportService,systemService)
+	.controller('SettingsController',['$scope','$stateParams','$location','reportService','systemService','transactionManager',function($scope,$stateParams,$location,reportService,systemService,transactionManager)
 	{
 		var settings = this;
 
@@ -645,9 +645,13 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		settings.menus = [
 			{name:'Reports',url:'#/settings/reports',status:settings.getStatus('reports')},
 			{name:'Users',url:'#/settings/users',status:settings.getStatus('users')},
-			{name:'Transactions',url:'#/settings/transactions',status:settings.getStatus('transactions')},
+			{name:'Transactions',url:'#/settings/transactions/successful',status:settings.getStatus('transactions')},
 			{name:'System Configurations',url:'#/settings/system',status:settings.getStatus('system')}
 		];
+
+		settings.successfulTransactions = [];
+		settings.pendingTransactions = [];
+		settings.failedTransactions = [];
 
 		settings.configurations = {};
 		settings.reports = {};
@@ -871,6 +875,22 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		}
 
+		settings.getIndex = function(path){
+			var pathArray = path.split('/');
+			return pathArray[pathArray.length-1];
+		}
+
+		transactionManager.listAllTransactions().then(function(result){
+			settings.successfulTransactions = result.data;
+			settings.pendingTransactions = result.data;
+			settings.failedTransactions = result.data;
+		},function(error){
+
+		});
+
+		/**
+		 * System Configurations
+		 * */
 		settings.loadExhange = false;
 		settings.showExhangeSucces = false;
 		settings.showExhangeError = false;
@@ -932,6 +952,19 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 
 				}
+
+		/**
+		 * Transactions Tabs
+		 * */
+		settings.activeClassArray = [];
+		settings.activeClassArray[settings.getIndex($location.$$path)]='active';
+		settings.activeClass = function(currentUlr){
+			settings.activeClassArray = [];
+			settings.activeClassArray[settings.getIndex(currentUlr)] = 'active';
+			$location.path(currentUlr);
+		}
+
+
 
 		settings.reports.years = settings.getYears();
 

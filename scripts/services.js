@@ -95,7 +95,17 @@ nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q,$
 
 
     var transactionManager = {
-        listTransactions: function () {
+        listAllTransactions: function () {
+
+            var deferred = $q.defer();
+            $http.get(API_BASE_URL + '/transactions/').then(function (result) {
+
+                deferred.resolve(result);
+            }, function (error) {
+                deferred.reject(error);
+            });
+            return deferred.promise;
+        },listTransactions: function () {
             var loggedUser = userManager.getAuthenticatedUser();
             var deferred = $q.defer();
             $http.get(API_BASE_URL + '/userTransactions/'+loggedUser.id).then(function (result) {

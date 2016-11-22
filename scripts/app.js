@@ -179,6 +179,46 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             },
             templateUrl: 'views/settings.html'
         })
+        .state('successfulTransactionSettings',{
+            url: '/settings/transactions/successful',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
+        })
+        .state('pendingTransactionSettings',{
+            url: '/settings/transactions/pending',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
+        })
+        .state('failedTransactionSettings',{
+            url: '/settings/transactions/failed',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
+        })
+        .state('messagesSettings',{
+            url: '/settings/transactions/messages',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
+        })
         .state('systemSettings',{
             url: '/settings/system',
             controller:'SettingsController',

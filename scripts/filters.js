@@ -59,6 +59,12 @@ var nalipaFilters = angular.module('nalipaFilters', [])
 
 			return tops;
 		};
+	}).filter('countObjects', function ($filter) {
+		return function (input) {
+
+                return input===undefined ? 0 : input.length;
+
+		};
 	})
     .filter('setDecimal', function ($filter) {
 		return function (input, places) {
