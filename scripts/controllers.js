@@ -913,6 +913,26 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 				}
 
+		settings.updateFeeConfigurations = function(configurations){
+					settings.loadFee = true;
+					settings.showFeeSucces = false;
+					settings.showFeeError = false;
+
+					configurations.updated_attribute = 'fee_info';
+
+					systemService.setConfigurations(configurations).then(function(result){
+						settings.showFeeSucces = true;
+						settings.showFeeError = false;
+						settings.loadFee = false;
+					},function(error){
+						settings.showFeeSucces = false;
+						settings.showFeeError = true;
+						settings.loadFee = false;
+					})
+
+
+				}
+
 		settings.reports.years = settings.getYears();
 
 		settings.getReport();

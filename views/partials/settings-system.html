@@ -63,17 +63,25 @@
         <div  class="row">
             <div class="col-md-6">
                 <h4>Transaction Fee Percent</h4>
-                <form>
+                <form  ng-submit="settings.updateFeeConfigurations(settings.configurations)">
                     <div class="form-group">
                         <label for="transaction_fee_percent">Percentage Transaction Fee</label>
                         <input type="text" class="form-control" ng-model="settings.configurations.transaction_fee_percent" id="transaction_fee_percent" placeholder="Percentage Transaction Fee">
                     </div>
                     <div class="row">
-                        <div class="col-md-6" style="padding-left:0px!important;">
+                        <div class="col-md-5"  style="padding-left:0px!important;">
                             <button type="submit" class="btn btn-default">Save</button>
                         </div>
-                        <div class="col-md-6">
-                            <i ng-if="settings.loadTransactionFee" class="fa fa-spinner fa-spin fa-2x"></i>
+                        <div class="col-md-7">
+                            <i ng-if="settings.loadFee" class="fa fa-spinner fa-spin fa-2x"></i>
+                            <div class="alert alert-success alert-dismissible" ng-if="!settings.loadFee&&settings.showFeeSucces" role="alert" style="padding:3px!important;">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                Update Successfully
+                            </div>
+                            <div class="alert alert-danger alert-dismissible" ng-if="settings.showFeeError" role="alert" style="padding:3px!important;">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                Update Failure
+                            </div>
                         </div>
                     </div>
                 </form>
