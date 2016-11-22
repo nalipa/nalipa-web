@@ -627,7 +627,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		return contact;
 	}])
-	.controller('SettingsController',['$scope','$stateParams','$location','reportService',function($scope,$stateParams,$location,reportService)
+	.controller('SettingsController',['$scope','$stateParams','$location','reportService','systemService',function($scope,$stateParams,$location,reportService,systemService)
 	{
 		var settings = this;
 
@@ -649,6 +649,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			{name:'System Configurations',url:'#/settings/system',status:settings.getStatus('system')}
 		];
 
+		settings.configurations = {};
 		settings.reports = {};
 
 		settings.reports.types = [
@@ -667,6 +668,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		settings.reports.categories = [
 			{name:'All',children:null},
 			{name:'Utility Codes',children:[
+				{name:'All'},
 				{name:'TOP'},
 				{name:'LUKU'},
 				{name:'DAWASCO'},
@@ -678,10 +680,12 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 				{name:'VMCASHIN'},
 			]},
 			{name:'Product',children:[
+				{name:'All'},
 				{name:'AIRTIME'},
 				{name:'BILLS'}
 			]},
 			{name:'Service Providers',children:[
+				{name:'All'},
 				{name:'Vodacom'},
 				{name:'Airtel'},
 				{name:'Tigo'},
@@ -706,6 +710,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		settings.reports.showChart = false;
 		settings.reports.showTable = true;
 		settings.reports.chartType = 'column';
+		settings.reports.selectedCategoryName = '';
 		settings.reports.title = settings.reports.selectedType + " by " + settings.reports.selectedCategory.name +' '+ settings.reports.selectedYear;
 
 		settings.getYears = function(){
@@ -757,9 +762,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 				//The below properties are watched separately for changes.
 
 				//Series object (optional) - a list of series using normal Highcharts series options.
-				series: [{
-					data: [10, 15, 12, 8, 7]
-				}],
+				series: settings.reports.chartData,
 				//Title configuration (optional)
 				title: {
 					text: 'Yes'
@@ -789,7 +792,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			};
 			settings.chartConfig.options.chart.type=settings.reports.chartType;
 			settings.chartConfig.title.text=settings.reports.title;
-			console.log(settings.chartConfig);
+
 		}
 
 		settings.changeReportType = function(reportType){
@@ -823,7 +826,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 				reportService.getDataFromApiSource(settings.reports.selectedType).then(function(result){
 
 
-						var preparedData = 	reportService.prepareData(
+						settings.reports.tableData = 	reportService.prepareTableData(
 							result.data,
 							settings.reports.selectedType,
 							settings.reports.selectedCategory,
@@ -832,15 +835,22 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 							settings.reports.selectedReportType
 						);
 
+						settings.reports.chartData = 	reportService.prepareChartData(
+							result.data,
+							settings.reports.selectedType,
+							settings.reports.selectedCategory,
+							settings.reports.selectedYear,
+							settings.reports.selectedMonth,
+							settings.reports.selectedReportType
+						);
+
+
 					if ( settings.reports.selectedReportType == 'table' ){
-							settings.reports.chartData = null;
-							settings.reports.tableData = preparedData;
-						settings.changeReportType(settings.reports.selectedReportType)
+
+						    settings.changeReportType(settings.reports.selectedReportType)
 						}
 					else
 						{
-							settings.reports.chartData = preparedData;
-							settings.reports.tableData = null;
 							settings.changeReportType(settings.reports.selectedReportType)
 						}
 
@@ -850,7 +860,6 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 				function(error){
 					console.log(error)
 				});
-
 
 			}
 
@@ -862,9 +871,61 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		}
 
+		settings.loadExhange = false;
+		settings.showExhangeSucces = false;
+		settings.showExhangeError = false;
+		settings.updateExchangeRate = function(configurations){
+			settings.loadExhange = true;
+			settings.showExhangeSucces = false;
+			settings.showExhangeError = false;
+
+			configurations.updated_attribute = 'exchange_rate';
+
+			systemService.setConfigurations(configurations).then(function(result){
+				settings.showExhangeSucces = true;
+				settings.showExhangeError = false;
+				settings.loadExhange = false;
+			},function(error){
+				settings.showExhangeSucces = false;
+				settings.showExhangeError = true;
+				settings.loadExhange = false;
+			})
+
+
+	    }
+		settings.updateSelcomConfigurations = function(configurations){
+					settings.loadVendor = true;
+					settings.showVendorSucces = false;
+					settings.showVendorError = false;
+
+					configurations.updated_attribute = 'vendor_info';
+
+					systemService.setConfigurations(configurations).then(function(result){
+						settings.showVendorSucces = true;
+						settings.showVendorError = false;
+						settings.loadVendor = false;
+					},function(error){
+						settings.showVendorSucces = false;
+						settings.showVendorError = true;
+						settings.loadVendor = false;
+					})
+
+
+				}
+
 		settings.reports.years = settings.getYears();
 
 		settings.getReport();
+
+		systemService.getConfigurations().then(function(result){
+
+			if ( result.data && result.statusText == "OK" )
+			{
+				settings.configurations = systemService.extractLatestConfigurations(result.data);
+			}
+		},function(){
+
+		})
 
 		return settings;
 

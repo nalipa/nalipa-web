@@ -9,19 +9,19 @@
             <form>
                 <div class="form-group">
                     <label for="report_type">Report Type</label>
-                    <select type="text" id="report_type" class="form-control" ng-model="settings.reports.selectedType"  ng-options="type.id as type.name for  type in settings.reports.types">
+                    <select type="text" id="report_type" class="form-control" ng-change="settings.getReport()" ng-model="settings.reports.selectedType"  ng-options="type.id as type.name for  type in settings.reports.types">
                         <option value="">
                         Select Type
                         </option>
                     </select>
                 </div>
             </form>
-            <form>
-                <div class="form-group">
-                    <label for="category">&nbsp;</label>
-                    <button type="button" class="btn btn-success" ng-click="settings.getReport()">Get Report</button>
-                </div>
-            </form>
+            <!--<form>-->
+                <!--<div class="form-group">-->
+                    <!--<label for="category">&nbsp;</label>-->
+                    <!--<button type="button" class="btn btn-success" ng-click="settings.getReport()">Get Report</button>-->
+                <!--</div>-->
+            <!--</form>-->
         </div>
         <div class="col-md-3">
             <form>
@@ -38,7 +38,7 @@
             <form>
                 <div class="form-group">
                     <label for="selected_category">&nbsp;</label>
-                    <select type="text" id="selected_category" ng-if="settings.reports.selectedCategory.children" class="form-control" ng-model="settings.reports.selectedCategoryName" ng-options="selectedCategory.name as selectedCategory.name for  selectedCategory in settings.reports.selectedCategory.children" >
+                    <select type="text" id="selected_category"  ng-change="settings.getReport()"  ng-if="settings.reports.selectedCategory.children" class="form-control" ng-model="settings.reports.selectedCategoryName" ng-options="selectedCategory.name as selectedCategory.name for  selectedCategory in settings.reports.selectedCategory.children" >
                         <option value="" ng-disabled="true">
                             Select Category Name
                         </option>
@@ -63,7 +63,7 @@
             <form>
                 <div class="form-group">
                     <label for="year">Year</label>
-                    <select type="text" class="form-control" ng-model="settings.reports.selectedYear" ng-options="year as year for year in settings.reports.years" id="year" >
+                    <select type="text" class="form-control"  ng-change="settings.getReport()"  ng-model="settings.reports.selectedYear" ng-options="year as year for year in settings.reports.years" id="year" >
                         <option value=""  ng-disabled="true">Select Year</option>
                     </select>
                 </div>
@@ -71,7 +71,7 @@
             <form ng-if="settings.reports.selectedPeriodType=='Monthly'">
                 <div class="form-group">
                     <label for="month">Month</label>
-                    <select type="text" class="form-control" ng-model="settings.reports.selectedMonth" id="month" >
+                    <select type="text" class="form-control"  ng-change="settings.getReport()"  ng-model="settings.reports.selectedMonth" id="month" >
                         <option value=""  ng-disabled="true">Select Month</option>
                         <option value="01">January</option>
                         <option value="02">February</option>
@@ -91,6 +91,7 @@
         </div>
     </div>
     <div id="report">
+
         <br/>
         <nalipa-report-table ng-show="settings.reports.showTable" data="settings.reports.tableData"></nalipa-report-table>
         <highchart  ng-show="settings.reports.showChart"  config="settings.chartConfig"></highchart>

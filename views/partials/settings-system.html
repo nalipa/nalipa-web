@@ -1,3 +1,96 @@
 <div>
-    System
+    <p style="font-weight: bold;font-size: 14px;"></p>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Nalipa System Configurations</div>
+    </div>
+    <div  class="row">
+        <div class="col-md-6">
+            <h4>Exchange Rate (USD - TZS)</h4>
+            <form  name="exchange-rate" ng-submit="settings.updateExchangeRate(settings.configurations)">
+                <div class="form-group">
+                    <label for="tzshilling">1 USD = {{settings.configurations.exchange_rate}} TZS </label>
+                    <input type="text" class="form-control" ng-model="settings.configurations.exchange_rate" id="tzshilling" placeholder="Tanzanian Shilling">
+                </div>
+                <div class="row">
+                    <div class="col-md-5"  style="padding-left:0px!important;">
+                        <button type="submit" class="btn btn-default">Save</button>
+                    </div>
+                    <div class="col-md-7">
+                        <i ng-if="settings.loadExhange" class="fa fa-spinner fa-spin fa-2x"></i>
+                        <div class="alert alert-success alert-dismissible" ng-if="!settings.loadExhange&&settings.showExhangeSucces" role="alert" style="padding:3px!important;">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            Update Successfully
+                        </div>
+                        <div class="alert alert-danger alert-dismissible" ng-if="settings.showExhangeError" role="alert" style="padding:3px!important;">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            Update Failure
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h4>Selcom Configurations</h4>
+            <form ng-submit="settings.updateSelcomConfigurations(settings.configurations)">
+                <div class="form-group">
+                    <label for="vendor_name">Selcom Vendor</label>
+                    <input type="text" class="form-control" ng-model="settings.configurations.selcom_vendor" id="vendor_name" placeholder="Selcom Vendor" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="selcom_pin">Selcom Pin</label>
+                    <input type="text" class="form-control" ng-model="settings.configurations.selcom_pin" id="selcom_pin" placeholder="Selcom Pin">
+                </div>
+                <div class="row">
+                    <div class="col-md-5"  style="padding-left:0px!important;">
+                        <button type="submit" class="btn btn-default">Save</button>
+                    </div>
+                    <div class="col-md-7">
+                        <i ng-if="settings.loadVendor" class="fa fa-spinner fa-spin fa-2x"></i>
+                        <div class="alert alert-success alert-dismissible" ng-if="!settings.loadVendor&&settings.showVendorSucces" role="alert" style="padding:3px!important;">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            Update Successfully
+                        </div>
+                        <div class="alert alert-danger alert-dismissible" ng-if="settings.showVendorError" role="alert" style="padding:3px!important;">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            Update Failure
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div  class="row">
+            <div class="col-md-6">
+                <h4>Transaction Fee Percent</h4>
+                <form>
+                    <div class="form-group">
+                        <label for="transaction_fee_percent">Percentage Transaction Fee</label>
+                        <input type="text" class="form-control" ng-model="settings.configurations.transaction_fee_percent" id="transaction_fee_percent" placeholder="Percentage Transaction Fee">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6" style="padding-left:0px!important;">
+                            <button type="submit" class="btn btn-default">Save</button>
+                        </div>
+                        <div class="col-md-6">
+                            <i ng-if="settings.loadTransactionFee" class="fa fa-spinner fa-spin fa-2x"></i>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <!--<h4>Selcom Configurations</h4>-->
+                <!--<form>-->
+                    <!--<div class="form-group">-->
+                        <!--<label for="vendor_name">Selcom Vendor</label>-->
+                        <!--<input type="text" class="form-control" id="vendor_name" placeholder="Selcom Vendor">-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                        <!--<label for="selcom_pin">Selcom Pin</label>-->
+                        <!--<input type="text" class="form-control" id="selcom_pin" placeholder="Selcom Pin">-->
+                    <!--</div>-->
+                    <!--<button type="submit" class="btn btn-default">Save</button>-->
+                <!--</form>-->
+            </div>
+    </div>
 </div>

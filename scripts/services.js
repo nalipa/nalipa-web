@@ -692,16 +692,6 @@ nalipaServices.factory('utilityCodeManager',function($http,API_BASE_URL, $q){
 nalipaServices.factory('reportService', function($http,API_BASE_URL,$q,transactionManager,orderManager){
     var reportService = {
         data:[],
-        prepareData:function(data,type,category,year,month,chartType){
-            reportService.data = data;
-            if ( chartType == 'table' )
-            {
-                return reportService.prepareTableData(reportService.data,year,month);
-            } else{
-                return reportService.prepareChartData(reportService.data,year,month,type);
-            }
-
-        },
         getDataFromApiSource:function(type){
 
             if (type=="transactions")
@@ -714,17 +704,70 @@ nalipaServices.factory('reportService', function($http,API_BASE_URL,$q,transacti
                 return orderManager.listOrders();
             }
         },
-        prepareTableData:function(data,year,month,type){
+        prepareTableData:function(data,type,category,year,month,chartType){
             var tableArray = [];
             angular.forEach(data,function(rowValue,rowIndex){
                 tableArray.push(rowValue);
             })
             return tableArray;
         },
-        prepareChartData:function(data,year,month,type){
+        prepareChartData:function(data,type,category,year,month,chartType){
+            return reportService.prepareSeries(data,year,month,type,category);
+        },
+        prepareSeries:function(data,year,month,type,category){
 
+            var names = []
+            if ( category.name == 'All' )
+            {
+                names.push(type);
+            }
+            else
+            {
+
+            }
+
+            var chartArray = [];
+            var counter = 0;
+            angular.forEach(data,function(rowValue,rowIndex){
+
+            })
+
+            angular.forEach(data,function(rowValue,rowIndex){
+                counter++;
+            })
+
+            chartArray.push({data:[counter],name:names[0]});
+            return chartArray;
         }
     }
 
     return reportService;
+});
+nalipaServices.factory('systemService', function($http,API_BASE_URL,$q){
+    var systemService = {
+        getConfigurations:function(){
+            var deferred = $q.defer();
+            $http.get(API_BASE_URL + '/system').then(function (result) {
+                deferred.resolve(result);
+            }, function (error) {
+                deferred.reject(error);
+            });
+            return deferred.promise;
+        },
+        setConfigurations:function(data){
+            var deferred = $q.defer();
+            $http.post(API_BASE_URL + '/system',data).then(function (result) {
+                deferred.resolve(result);
+            }, function (error) {
+                deferred.reject(error);
+            });
+            return deferred.promise;
+        },
+
+        extractLatestConfigurations:function(data){
+            return data[data.length-1];
+        }
+    }
+
+    return systemService;
 });
