@@ -4,7 +4,7 @@
 
 /* Controllers */
 var nalipaControllers = angular.module('nalipaControllers', [])
-	.controller('MainController',['$scope','authService','$cookieStore',function($scope,authService,$cookieStore)
+	.controller('MainController',['$scope','authService','$cookieStore','systemService',function($scope,authService,$cookieStore,systemService)
 	{
 		var main = this;
 		main.authenicatedUser = "";
@@ -13,8 +13,14 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			main.authenicatedUser = eval('('+$cookieStore.get('user')+')');
 		}
 
-		localStorage.setItem('exchangeRate',2240);
-		localStorage.setItem('transactionFee',10);
+		systemService.getConfigurations().then(function(result){
+			var system = systemService.extractLatestConfigurations(result.data);
+
+			localStorage.setItem('exchangeRate',system.exchange_rate);
+			localStorage.setItem('transactionFee',system.transaction_fee_percent);
+		},function(error){
+			//console.log(error);
+		});
 
 		return main;
 
@@ -185,7 +191,8 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		return home;
 
-	}]).controller('WorkController',['$scope',function($scope)
+	}])
+	.controller('WorkController',['$scope',function($scope)
 	{
 
 
@@ -323,7 +330,8 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			if ( invalidList.length == 0 ) {
 				cart.showPaySpinner = true;
 				stripeManager.createToken(cardInfo).then(function(resultFromProcess){
-
+					console.log("TRACKING SELCOM DATA");
+					console.log(resultFromProcess);
 					if ( resultFromProcess.status )
 					{
 						cart.responseObject.alert = "alert-success";
