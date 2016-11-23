@@ -627,7 +627,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		return contact;
 	}])
-	.controller('SettingsController',['$scope','$stateParams','$location','reportService','systemService','transactionManager',function($scope,$stateParams,$location,reportService,systemService,transactionManager)
+	.controller('SettingsController',['$scope','$stateParams','$location','reportService','systemService','transactionManager','$filter',function($scope,$stateParams,$location,reportService,systemService,transactionManager,$filter)
 	{
 		var settings = this;
 
@@ -881,9 +881,9 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		}
 
 		transactionManager.listAllTransactions().then(function(result){
-			settings.successfulTransactions = result.data;
-			settings.pendingTransactions = result.data;
-			settings.failedTransactions = result.data;
+			settings.successfulTransactions = $filter('filterTransactions')(result.data,'successful');
+			settings.pendingTransactions = $filter('filterTransactions')(result.data,'pending');
+			settings.failedTransactions = $filter('filterTransactions')(result.data,'failed');
 		},function(error){
 
 		});

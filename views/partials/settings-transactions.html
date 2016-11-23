@@ -28,7 +28,7 @@
                 <div role="tabpanel" class="tab-pane {{settings.activeClassArray['successful']}}" id="/settings/transactions/successful">
                     <br/>
                     <div >
-                        <table class="table table-hover table-responsive">
+                        <table class="table table-hover table-responsive"  datatable="ng">
                             <caption>There are  {{settings.successfulTransactions | countObjects}}  Successful Transactions</caption>
                             <thead>
                             <tr>
@@ -54,7 +54,7 @@
                 <div role="tabpanel" class="tab-pane {{settings.activeClassArray['pending']}}" id="/settings/transactions/pending">
                     <br/>
                     <div >
-                        <table class="table table-hover table-responsive">
+                        <table class="table table-hover table-responsive"  datatable="ng">
                             <caption>There are  {{settings.pendingTransactions | countObjects}}  Pending Transactions</caption>
                             <thead>
                             <tr>
@@ -80,7 +80,7 @@
                 <div role="tabpanel" class="tab-pane {{settings.activeClassArray['failed']}}" id="/settings/transactions/failed">
                     <br/>
                     <div >
-                        <table class="table table-hover table-responsive">
+                        <table class="table table-hover table-responsive" datatable="ng">
                             <caption>There are {{settings.failedTransactions | countObjects}} Failed Transactions</caption>
                             <thead>
                             <tr>
@@ -108,7 +108,7 @@
                 <div role="tabpanel" class="tab-pane {{settings.activeClassArray['messages']}}" id="/settings/transactions/messages">
                     <br/>
                     <div >
-                        <table class="table table-hover table-responsive">
+                        <table class="table table-hover table-responsive"  >
                             <caption>Crients Feed Back</caption>
                             <thead>
                             <tr>

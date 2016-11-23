@@ -59,11 +59,30 @@ var nalipaFilters = angular.module('nalipaFilters', [])
 
 			return tops;
 		};
-	}).filter('countObjects', function ($filter) {
+	})
+    .filter('countObjects', function ($filter) {
 		return function (input) {
 
                 return input===undefined ? 0 : input.length;
 
+		};
+	})
+    .filter('filterTransactions', function ($filter) {
+		return function (input,pattern) {
+
+            var filteredTransaction = [];
+
+            angular.forEach(input,function(value,index){
+
+                if ( value.status.indexOf(pattern.toUpperCase()) >= 0 )
+                {
+
+                    filteredTransaction.push(value);
+                }
+
+            });
+
+                return filteredTransaction;
 		};
 	})
     .filter('setDecimal', function ($filter) {
