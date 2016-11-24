@@ -660,6 +660,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		settings.successfulTransactions = [];
 		settings.pendingTransactions = [];
 		settings.failedTransactions = [];
+		settings.customerMessages = [];
 
 		settings.configurations = {};
 		settings.reports = {};

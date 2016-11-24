@@ -10,16 +10,16 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="{{settings.activeClassArray['successful']}}">
-                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/successful')" aria-controls="/settings/transactions/successful" role="tab"  data-toggle="tab">Successful Transactions</a>
+                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/successful')" aria-controls="/settings/transactions/successful" role="tab"  data-toggle="tab">Successful   <span style="color:red;">({{settings.successfulTransactions | countObjects}})</span></a>
                 </li>
                 <li role="presentation" class="{{settings.activeClassArray['pending']}}">
-                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/pending')" aria-controls="/settings/transactions/pending" role="tab" data-toggle="tab">Pending Transactions</a>
+                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/pending')" aria-controls="/settings/transactions/pending" role="tab" data-toggle="tab">Pending   <span style="color:red;">({{settings.pendingTransactions | countObjects}})</span></a>
                 </li>
                 <li role="presentation" class="{{settings.activeClassArray['failed']}}">
-                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/failed')" aria-controls="/settings/transactions/failed" role="tab" data-toggle="tab">Failed Transactions</a>
+                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/failed')" aria-controls="/settings/transactions/failed" role="tab" data-toggle="tab">Failed  <span style="color:red;">({{settings.failedTransactions | countObjects}})</span></a>
                 </li>
                 <li role="presentation" class="{{settings.activeClassArray['messages']}}">
-                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/messages')" aria-controls="/settings/transactions/messages" role="tab" data-toggle="tab">Customer Messages</a>
+                    <a style="cursor: pointer" ng-click="settings.activeClass('settings/transactions/messages')" aria-controls="/settings/transactions/messages" role="tab" data-toggle="tab">User FeedBack  <span style="color:red;">({{settings.customerMessages | countObjects}})</span></a>
                 </li>
             </ul>
 
