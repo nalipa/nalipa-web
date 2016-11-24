@@ -1,3 +1,26 @@
 <div>
-    Users
+    <p style="font-weight: bold;font-size: 14px;"></p>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Nalipa Users</div>
+    </div>
+    <div class="row">
+        <div >
+            <table class="table table-hover table-responsive"  datatable="ng">
+                <caption>There are  <span style="color:red;font-weight: bold;">{{settings.users | countObjects}}</span>  users including <a style="font-weight: bolder" href="#/profile/{{settings.user.id}}">you</a></caption>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="user in settings.users" ng-click="settings.showUserProfile(user)" style="cursor: pointer;color:#397AB7;">
+                    <td>{{user.first_name}} {{user.middle_name}} {{user.last_name}}</td>
+                    <td>{{user.email}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

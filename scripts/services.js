@@ -157,7 +157,7 @@ nalipaServices.factory('transactionManager', function ($http, API_BASE_URL, $q,$
 
     return transactionManager;
 });
-nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL, BASE_AUTH_URL,MAIL_URL, $q) {
+nalipaServices.factory('userManager', function ($http,$cookieStore,$location, API_BASE_URL, BASE_AUTH_URL,MAIL_URL, $q) {
     var userManager = {
 
         getUserById: function(user_id) {
@@ -217,7 +217,10 @@ nalipaServices.factory('userManager', function ($http,$cookieStore, API_BASE_URL
         }
         ,
         getAuthenticatedUser: function () {
-            return eval('('+$cookieStore.get('user')+')');
+            var authenticated = eval('('+$cookieStore.get('user')+')');
+
+            if ( authenticated ){return authenticated}
+            return false;
         }
         ,
         requestToken: function (credentials) {

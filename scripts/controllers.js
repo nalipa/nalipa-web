@@ -635,7 +635,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		return contact;
 	}])
-	.controller('SettingsController',['$scope','$stateParams','$location','reportService','systemService','transactionManager','$filter',function($scope,$stateParams,$location,reportService,systemService,transactionManager,$filter)
+	.controller('SettingsController',['$scope','$stateParams','$location','$cookieStore','reportService','systemService','transactionManager','userManager','$filter',function($scope,$stateParams,$location,$cookieStore,reportService,systemService,transactionManager,userManager,$filter)
 	{
 		var settings = this;
 
@@ -725,7 +725,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		settings.reports.chartType = 'column';
 		settings.reports.selectedCategoryName = '';
 		settings.reports.title = settings.reports.selectedType + " by " + settings.reports.selectedCategory.name +' '+ settings.reports.selectedYear;
-
+		settings.user = eval('('+$cookieStore.get('user')+')');
 		settings.getYears = function(){
 			var date = new Date();
 			var fullYear = date.getFullYear();
@@ -974,6 +974,24 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		}
 
 
+		/**
+		 * Pulling user details
+		 * */
+		settings.users = [];
+		userManager.listUsers().then(function(result){
+			if (result.data)
+			{
+				settings.users = result.data;
+			}
+
+		},function(error){
+			console.log(error);
+		});
+
+		settings.showUserProfile = function(user)
+		{
+			$location.path('/profile/'+user.id);
+		}
 
 		settings.reports.years = settings.getYears();
 
