@@ -9,6 +9,7 @@
                 <th>Date</th>
                 <th>Description</th>
                 <th>Amount (US$)</th>
+                <th>Rate ($1 - TZS)</th>
                 <th>Status</th>
             </tr>
             </thead>
@@ -18,6 +19,7 @@
                 <td style="font-weight: bolder;color: #2b542c">{{order.transaction_date}}</td>
                 <td style="font-weight: bolder;color: #2b542c">{{'TZS '+order.tzs_amount+' ACTION '+' TO '+order.transaction.recipient_number}}</td>
                 <td style="font-weight: bolder;color: #2b542c">{{order.usd_amount}}</td>
+                <td style="font-weight: bolder;color: #2b542c">{{order.exchange_rate}}</td>
                 <td style="font-weight: bolder;color: #2b542c">{{order.status}}</td>
             </tr>
             </tbody>
@@ -27,6 +29,7 @@
                 <th>Date</th>
                 <th>Description</th>
                 <th>Amount (US$)</th>
+                <th>Rate ($1 - TZS)</th>
                 <th>Status</th>
             </tr>
             </tfoot>

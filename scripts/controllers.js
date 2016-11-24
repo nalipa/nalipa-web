@@ -1075,11 +1075,11 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 			var transaction = eval('('+localStorage.getItem('raw_transaction')+')');
 
-			if (transaction.type == 'airtime') {
+			if (transaction && transaction.type == 'airtime') {
 				user.completeAirTime(transaction,authenicatedUser);
 			}
 
-			if (transaction.type == 'bill') {
+			if (transaction && transaction.type == 'bill') {
 				user.completeBills(transaction,authenicatedUser);
 			}
 		}
