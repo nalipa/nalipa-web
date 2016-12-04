@@ -536,7 +536,11 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
 
                                     promiseObject.then(function(success){
                                         responseCounter++;
-                                        if (responseCounter>=data.length){
+                                        if ( responseCounter >= data.length ){
+                                            if ( success.data )
+                                            {
+                                                stripeManager.checkSelcomApiMessage(success.data);
+                                            }
                                             var stripeMessage = stripeManager.getMessage(results.data);
                                             deferred.resolve(stripeMessage);
                                         }
@@ -577,7 +581,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             });
             return defer.promise;
         },
-        isRechargable:function(chargeObject){
+        isRechargable:function(chargeObject) {
             if ( chargeObject.type )
             {
                 // here is when charging failed
@@ -594,7 +598,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             }
 
         },
-        getMessage:function(chargeObject){
+        getMessage:function(chargeObject) {
             if ( chargeObject.type )
             {
                 // here is when charging failed
@@ -605,6 +609,9 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             {
                 return chargeObject;
             }
+        },
+        checkSelcomApiMessage:function(selcomData) {
+            console.log('POSIBILITY',selcomData.indexOf('FAIL'));
         }
     }
 
