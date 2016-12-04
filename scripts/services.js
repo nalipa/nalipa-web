@@ -539,7 +539,34 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
                                         if ( responseCounter >= data.length ){
                                             if ( success.data )
                                             {
-                                                stripeManager.checkSelcomApiMessage(success.data);
+                                                var selcomMessage  = stripeManager.checkSelcomApiMessage(success.data);
+
+                                                if ( selcomMessage.result == 'SUCCESS' )
+                                                {
+                                                    //TODO:: sending if succeed.
+
+
+
+                                                }
+
+                                                if ( selcomMessage.result == 'FAIL' )
+                                                {
+
+                                                    var message = {recipient_number:'0654298240',
+                                                        sms:'HELLOW NALIPA TEAM:' +
+                                                        '' +
+                                                        'SELCOM TRANSACTION FAILED:' +
+                                                        '' +
+                                                        'ERROR:'+selcomMessage.message
+                                                    }
+                                                    stripeManager.sendBongoLiveSMS(message).then(function(data){
+                                                        console.log(data);
+                                                    },function(error){
+                                                        console.log(error);
+                                                    });
+
+
+                                                }
                                             }
                                             var stripeMessage = stripeManager.getMessage(results.data);
                                             deferred.resolve(stripeMessage);
@@ -571,6 +598,17 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
                 return deferred.promise;
             })
         },
+        sendBongoLiveSMS:function(object){
+            var defer = $q.defer();
+
+            $http.post(API_BASE_URL + 'notifyBySMS', object).then(function (data) {
+                defer.resolve(data);
+            }, function (error) {
+                defer.reject(error);
+            });
+            return defer.promise;
+        }
+        ,
         chargeCustomerCard: function (paymentInformation) {
             var defer = $q.defer();
 
@@ -611,16 +649,14 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             }
         },
         checkSelcomApiMessage:function(selcomData) {
-            var message = ngXml2json.parser(selcomData);
-            //var failure = selcomData.indexOf('FAIL');
-            //var success = selcomData.indexOf('SUCCESS');
+            var messageObject = ngXml2json.parser(selcomData);
 
-            console.log(message);
-
-            //if ( failure >=0 )
-            //{
-            //    return "TRANSACTION HAS FAILED";
-            //}
+            var messageArray = messageObject.methodresponse.params.param.value.struct.member;
+            var messageOutput = {};
+            angular.forEach(messageArray, function(messageMember){
+                messageOutput[messageMember.name] = messageMember.value;
+            });
+            return messageOutput;
         }
     }
 
