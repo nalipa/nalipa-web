@@ -484,7 +484,7 @@ nalipaServices.factory('paramManager', function () {
     }
     return paramManager;
 });
-nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, selcomManager) {
+nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, selcomManager,ngXml2json) {
     var stripeManager = {
         validateCardDetails: function (cardDetails) {
 
@@ -611,7 +611,16 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             }
         },
         checkSelcomApiMessage:function(selcomData) {
-            console.log('POSIBILITY',selcomData.indexOf('FAIL'));
+            var message = ngXml2json.parse(selcomData);
+            //var failure = selcomData.indexOf('FAIL');
+            //var success = selcomData.indexOf('SUCCESS');
+
+            console.log(message);
+
+            //if ( failure >=0 )
+            //{
+            //    return "TRANSACTION HAS FAILED";
+            //}
         }
     }
 

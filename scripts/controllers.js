@@ -197,7 +197,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 
 	}])
-	.controller('CartController',['$scope','$location','$stateParams','$filter','transactionManager','countryManager','serviceProviderManager','amountManager','stripeManager','selcomManager','authService','userManager',function($scope,$location,$stateParams,$filter,transactionManager,countryManager,serviceProviderManager,amountManager,stripeManager,selcomManager,authService,userManager)
+	.controller('CartController',['$scope','$location','$stateParams','$filter','transactionManager','countryManager','serviceProviderManager','amountManager','stripeManager','selcomManager','authService','userManager','ngXml2json',function($scope,$location,$stateParams,$filter,transactionManager,countryManager,serviceProviderManager,amountManager,stripeManager,selcomManager,authService,userManager,ngXml2json)
 	{
 		var cart = this;
 
