@@ -40,7 +40,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="transaction in settings.successfulTransactions">
+                            <tr ng-repeat="transaction in settings.successfulTransactions" style="cursor: pointer;" ng-click="settings.exploreTransaction(transaction)">
                                 <th scope="row">{{transaction.id}}</th>
                                 <td>{{transaction.recipient}}</td>
                                 <td>{{transaction.service_provider.name}}</td>
@@ -66,7 +66,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="transaction in settings.pendingTransactions">
+                            <tr ng-repeat="transaction in settings.pendingTransactions" style="cursor: pointer;"   ng-click="settings.exploreTransaction(transaction)">
                                 <th scope="row">{{transaction.id}}</th>
                                 <td>{{transaction.recipient}}</td>
                                 <td>{{transaction.service_provider.name}}</td>
@@ -89,17 +89,15 @@
                                 <th>Service Provider</th>
                                 <th>Account Number</th>
                                 <th>Amount (TZS)</th>
-                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="transaction in settings.failedTransactions">
+                            <tr ng-repeat="transaction in settings.failedTransactions"  style="cursor: pointer;"  ng-click="settings.exploreTransaction(transaction)">
                                 <th scope="row">{{transaction.id}}</th>
                                 <td>{{transaction.recipient}}</td>
                                 <td>{{transaction.service_provider.name}}</td>
                                 <td>{{transaction.account_number}}</td>
                                 <td>{{transaction.amount}}</td>
-                                <td><a class="alert-danger" title="Delete Failed Transacion" style="cursor: pointer">Delete</a>&nbsp;&nbsp;<a class="alert-info"  title="Notify Customer on Failed Transacion"  style="cursor: pointer">Notify</a></td>
                             </tr>
                             </tbody>
                         </table>

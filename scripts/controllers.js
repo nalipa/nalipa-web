@@ -993,6 +993,10 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			$location.path('/profile/'+user.id);
 		}
 
+		settings.exploreTransaction = function(transaction){
+			console.log(transaction);
+		}
+
 		settings.reports.years = settings.getYears();
 
 		settings.getReport();
