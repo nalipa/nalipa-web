@@ -611,7 +611,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
             }
         },
         checkSelcomApiMessage:function(selcomData) {
-            var message = ngXml2json.parse(selcomData);
+            var message = ngXml2json.parser(selcomData);
             //var failure = selcomData.indexOf('FAIL');
             //var success = selcomData.indexOf('SUCCESS');
 
@@ -626,7 +626,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
 
     return stripeManager;
 });
-nalipaServices.factory('selcomManager', function ($http,API_BASE_URL, $q) {
+nalipaServices.factory('selcomManager', function ($http,API_BASE_URL, $q,ngXml2json) {
     var selcomManager = {
         prepareOrdersForRecharge: function () {
             var availableOrders = eval('(' + localStorage.getItem('pendingTransaction') + ')');
@@ -675,7 +675,7 @@ nalipaServices.factory('selcomManager', function ($http,API_BASE_URL, $q) {
 
     return selcomManager;
 });
-nalipaServices.factory('utilityCodeManager',function($http,API_BASE_URL, $q){
+nalipaServices.factory('utilityCodeManager',function($http,API_BASE_URL, $q,ngXml2json){
     var utilityCodeManager = {
         listUtilities: function () {
             var deferred = $q.defer();
