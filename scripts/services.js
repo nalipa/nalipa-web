@@ -541,7 +541,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
                                             {
                                                 var selcomMessage  = stripeManager.checkSelcomApiMessage(success.data);
 
-                                                if ( selcomMessage.result == 'SUCCESS' )
+                                                if ( selcomMessage.result.string == 'SUCCESS' )
                                                 {
                                                     //TODO:: sending if succeed.
 
@@ -549,7 +549,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, 
 
                                                 }
 
-                                                if ( selcomMessage.result == 'FAIL' )
+                                                if ( selcomMessage.result.string == 'FAIL' )
                                                 {
 
                                                     var message = {recipient_number:'0654298240',
