@@ -484,7 +484,7 @@ nalipaServices.factory('paramManager', function () {
     }
     return paramManager;
 });
-nalipaServices.factory('stripeManager', function ($http,STRIPE_URL, stripe, $q, selcomManager,ngXml2json) {
+nalipaServices.factory('stripeManager', function ($http,STRIPE_URL,API_BASE_URL, stripe, $q, selcomManager,ngXml2json) {
     var stripeManager = {
         validateCardDetails: function (cardDetails) {
 
