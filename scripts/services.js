@@ -552,12 +552,12 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL,API_BASE_URL,
                                                 if ( selcomMessage.result.string == 'FAIL' )
                                                 {
 
-                                                    var message = {recipient_number:'0654298240',
-                                                        sms:'HELLOW NALIPA TEAM:' +
-                                                        '' +
-                                                        'SELCOM TRANSACTION FAILED:' +
-                                                        '' +
-                                                        'ERROR:'+selcomMessage.message.string
+                                                    var message = {recipient_number:'0787656606',
+                                                        sms:'HELLOW NALIPA TEAM.' +
+                                                        '                         ' +
+                                                        'SELCOM TRANSACTION FAILED.' +
+                                                        '                           ' +
+                                                        'ERROR: '+selcomMessage.message.string
                                                     }
                                                     stripeManager.sendBongoLiveSMS(message).then(function(data){
                                                         console.log(data);
