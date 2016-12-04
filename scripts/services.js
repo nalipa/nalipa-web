@@ -601,7 +601,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL,API_BASE_URL,
         sendBongoLiveSMS:function(object){
             var defer = $q.defer();
 
-            $http.post(API_BASE_URL + 'notifyBySMS', object).then(function (data) {
+            $http.post(API_BASE_URL + '/notifyBySMS', object).then(function (data) {
                 defer.resolve(data);
             }, function (error) {
                 defer.reject(error);
