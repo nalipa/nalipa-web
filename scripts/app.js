@@ -199,9 +199,28 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
                 }]
             },
             templateUrl: 'views/settings.html'
+        }).state('pendingTransactionSettingsDetail',{
+            url: '/settings/transactions/pending/:transactionId',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
         })
         .state('failedTransactionSettings',{
             url: '/settings/transactions/failed',
+            controller:'SettingsController',
+            resolve:{
+                user:['authService','$q',function(authService,$q){
+                    return authService.user || $q.reject({unAuthorized:true});
+                }]
+            },
+            templateUrl: 'views/settings.html'
+        })
+        .state('failedTransactionSettingsDetail',{
+            url: '/settings/transactions/failed/:transactionId',
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){

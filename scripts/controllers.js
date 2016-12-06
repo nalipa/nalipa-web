@@ -890,8 +890,12 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 		transactionManager.listAllTransactions().then(function(result){
 			settings.successfulTransactions = $filter('filterTransactions')(result.data,'successful');
-			settings.pendingTransactions = $filter('filterTransactions')(result.data,'pending');
-			settings.failedTransactions = $filter('filterTransactions')(result.data,'failed');
+			settings.pendingTransactions	= $filter('filterTransactions')(result.data,'pending');
+			settings.failedTransactions		= $filter('filterTransactions')(result.data,'failed');
+
+			localStorage.setItem('settings-successfulTransactions',JSON.stringify(settings.successfulTransactions));
+			localStorage.setItem('settings-pendingTransactions',JSON.stringify(settings.pendingTransactions));
+			localStorage.setItem('settings-failedTransactions',JSON.stringify(settings.failedTransactions));
 		},function(error){
 
 		});
@@ -992,9 +996,60 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 			$location.path('/profile/'+user.id);
 		}
 
-		settings.exploreTransaction = function(transaction){
-			console.log(transaction);
+		settings.exploreTransaction = function(transaction,status){
+			$location.path('settings/transactions/'+status+'/'+transaction.id);
+
 		}
+
+		if ( $stateParams.transactionId )
+		{
+			settings.detailedInfo = true;
+
+			settings.transaction = {};
+
+			var status = $location.path();
+			settings.backUrl = status.replace('/'+$stateParams.transactionId,"");
+
+			if ( status.indexOf('pending') >= 0 ){
+				var pendingTransactions  = eval('('+localStorage.getItem('settings-pendingTransactions')+')');
+				angular.forEach(pendingTransactions,function(transaction){
+					if ( transaction.id == $stateParams.transactionId )
+					{
+						settings.transaction = transaction;
+					}
+
+				});
+			}
+
+			if ( status.indexOf('successful') >= 0 ){
+				var successfulTransactions = eval('('+localStorage.getItem('settings-successfulTransactions')+')');
+				angular.forEach(successfulTransactions,function(transaction){
+					if ( transaction.id == $stateParams.transactionId )
+					{
+						settings.transaction = transaction;
+					}
+				});
+			}
+
+			if ( status.indexOf('failed') >= 0 ){
+				 var failedTransactions = eval('('+localStorage.getItem('settings-failedTransactions')+')');
+				angular.forEach(failedTransactions,function(transaction){
+					if ( transaction.id == $stateParams.transactionId )
+					{
+						settings.transaction = transaction;
+					}
+				});
+			}
+
+
+			settings.detailedInfoTemplateUrl = "views/partials/settings-transactions-details.html";
+		}
+		else
+		{
+			settings.detailedInfo = false;
+		}
+
+
 
 		settings.reports.years = settings.getYears();
 

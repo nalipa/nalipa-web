@@ -23,7 +23,8 @@
     </div>
 
     <div class="col-md-9">
-        <ng-include src="settings.templateUrl"></ng-include>
+        <ng-include src="settings.templateUrl" ng-if="!settings.detailedInfo"></ng-include>
+        <ng-include src="settings.detailedInfoTemplateUrl"  ng-if="settings.detailedInfo"></ng-include>
     </div>
 
 </div>

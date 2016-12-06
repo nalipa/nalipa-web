@@ -1,0 +1,43 @@
+<h4>Transaction Details</h4>
+<br/>
+<div class="row ">
+    <table class="table table-responsive table-bordered">
+        <tr>
+            <th>Sender</th><td>{{settings.transaction.user.first_name}} {{settings.transaction.user.middle_name}} {{settings.transaction.user.last_name}}</td>
+        </tr>
+        <tr>
+            <th>Sender Phone Number</th><td>{{settings.transaction.user.phone_number}}</td>
+        </tr>
+        <tr>
+            <th>Recipient</th><td>{{settings.transaction.recipient}}</td>
+        </tr>
+        <tr>
+            <th>Recipient Phone Number</th><td>{{settings.transaction.recipient_number}}</td>
+        </tr>
+        <tr>
+            <th>Transaction Date</th><td>{{settings.transaction.transaction_date}}</td>
+        </tr>
+        <tr>
+            <th>Service Provider</th><td>{{settings.transaction.service_provider.name}}</td>
+        </tr>
+        <tr>
+            <th>Transaction Type</th><td>{{settings.transaction.service_provider.product}}, {{settings.transaction.service_provider.utility_code.utility_code}}</td>
+        </tr>
+        <tr>
+            <th>Amount</th><td>{{settings.transaction.amount}}</td>
+        </tr>
+
+        <tr>
+            <th>Status</th><td>{{settings.transaction.status}}</td>
+        </tr>
+
+        <tr>
+            <th>Message To Recipient</th><td>{{settings.transaction.sms}}</td>
+        </tr>
+
+    </table>
+</div>
+<div>
+
+    <a class="btn btn-success btn-sm" href="#{{settings.backUrl}}"><i class="fa fa-arrow-circle-left"></i>&nbsp;&nbsp;Back</a>
+</div>

@@ -40,7 +40,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="transaction in settings.successfulTransactions" style="cursor: pointer;" ng-click="settings.exploreTransaction(transaction)">
+                            <tr ng-repeat="transaction in settings.successfulTransactions" style="cursor: pointer;" ng-click="settings.exploreTransaction(transaction,'successful')">
                                 <th scope="row">{{transaction.id}}</th>
                                 <td>{{transaction.recipient}}</td>
                                 <td>{{transaction.service_provider.name}}</td>
@@ -66,7 +66,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="transaction in settings.pendingTransactions" style="cursor: pointer;"   ng-click="settings.exploreTransaction(transaction)">
+                            <tr ng-repeat="transaction in settings.pendingTransactions" style="cursor: pointer;"   ng-click="settings.exploreTransaction(transaction,'pending')">
                                 <th scope="row">{{transaction.id}}</th>
                                 <td>{{transaction.recipient}}</td>
                                 <td>{{transaction.service_provider.name}}</td>
@@ -92,7 +92,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="transaction in settings.failedTransactions"  style="cursor: pointer;"  ng-click="settings.exploreTransaction(transaction)">
+                            <tr ng-repeat="transaction in settings.failedTransactions"  style="cursor: pointer;"  ng-click="settings.exploreTransaction(transaction,'failed')">
                                 <th scope="row">{{transaction.id}}</th>
                                 <td>{{transaction.recipient}}</td>
                                 <td>{{transaction.service_provider.name}}</td>

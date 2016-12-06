@@ -541,9 +541,44 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL,API_BASE_URL,
                                             {
                                                 var selcomMessage  = stripeManager.checkSelcomApiMessage(success.data);
 
-                                                if ( selcomMessage.result.string == 'SUCCESS' )
+                                                if ( selcomMessage.result.string !='FAIL' )
                                                 {
-                                                    //TODO:: sending if succeed.
+                                                    //TODO:: sending if succeed. THIS HAS TO CHECK FOR EACH INDIVIDUAL TRANSACTIONS
+                                                    var authenticated = eval('('+$cookieStore.get('user')+')');
+                                                    var recepients = stripeManager.getTransactionsDetails(eval('('+localStorage.getItem('pendingTransaction')+')'));
+
+                                                    angular.forEach(recepients , function(recipient){
+                                                        /**
+                                                         * Send user success response to recepient mobile phone via sms
+                                                         * */
+
+                                                        var message  = "Hello "+recipient.name+"("+recipient.phone+")"
+                                                                       +"                     "
+                                                                       +"You have been charged with "+recipient.amount+" TZS. for "+recipient.utility
+                                                                       +"                     "
+                                                                       +"by "+authenticated.first_name+" "+authenticated.last_name+"("+authenticated.phone_number+")";
+
+                                                        var messageSMS = {recipient_number:recipient.phone,
+                                                            sms:message
+                                                        }
+                                                        stripeManager.sendBongoLiveSMS(messageSMS).then(function(data){
+                                                            console.log(data);
+                                                        },function(error){
+                                                            console.log(error);
+                                                        });
+
+
+                                                        /**
+                                                         * Send user success response via email to user
+                                                         * */
+
+                                                        var messageEmail  = "Hello "+authenticated.first_name+" "+authenticated.last_name+"("+authenticated.phone_number+")"
+                                                            +"                     "
+                                                            +"You have recharged "+recipient.amount+" TZS. for "+recipient.utility
+                                                        +"                     "
+                                                        +"to "+recipient.name+"("+recipient.phone+")";
+                                                    });
+
 
 
 
@@ -559,6 +594,7 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL,API_BASE_URL,
                                                         '                           ' +
                                                         'ERROR: '+selcomMessage.message.string
                                                     }
+
                                                     stripeManager.sendBongoLiveSMS(message).then(function(data){
                                                         console.log(data);
                                                     },function(error){
@@ -657,6 +693,15 @@ nalipaServices.factory('stripeManager', function ($http,STRIPE_URL,API_BASE_URL,
                 messageOutput[messageMember.name] = messageMember.value;
             });
             return messageOutput;
+        },
+        getTransactionsDetails:function(pendingTransaction){
+            var recipients = [];
+
+            angular.forEach(pendingTransaction, function(transaction){
+                recipients.push({name:transaction.recipient,phone:transaction.recipient_number,amount:transaction.amount,utility:transaction.utility_code.utility_code});
+            });
+
+            return recipients;
         }
     }
 
