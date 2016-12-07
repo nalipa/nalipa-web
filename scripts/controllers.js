@@ -1084,13 +1084,16 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 		})
 
 
-        user.registerUser = function(user){
+        user.registerUser = function(userObject){
 			user.alertBody = {};
-            userManager.addUser(user).then(function(result){
+            userManager.addUser(userObject).then(function(result){
 				if ( result.statusText=="OK" && result.data)
 				{
 					user.register = {};
 					user.alertBody = {alert:'alert-success',isShown:true,message:"User registered successful"};
+					setTimeout(function() {
+						$location.path('login');
+					}, 500);
 				}
 				else{
 					user.alertBody = {alert:'alert-danger',isShown:true,message:"User registration failed"};
@@ -1101,9 +1104,9 @@ var nalipaControllers = angular.module('nalipaControllers', [])
             });
         }
 
-		user.updateUser = function(user){
+		user.updateUser = function(userObject){
 
-			userManager.updateUser(user,user.id).then(function(result){
+			userManager.updateUser(userObject,userObject.id).then(function(result){
 				if ( result.statusText=="OK" && result.data)
 				{
 
@@ -1111,7 +1114,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 					//user.register.alertBody.isShown = true;
 					//user.register.alertBody.message="Profile updated successful";
 
-					$location.path('profile/'+user.id);
+					$location.path('profile/'+userObject.id);
 				}
 				else{
 
