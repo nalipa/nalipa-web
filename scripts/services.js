@@ -269,8 +269,25 @@ nalipaServices.factory('authService',function ($http, API_BASE_URL, BASE_AUTH_UR
     var auth = {};
     auth.login = function (credentials) {
         return $http.post(API_BASE_URL + '/login', credentials).then(function (response, status) {
+            function checkRole(userRoles){
+                angular.forEach(userRoles, function(role){
+
+                    if ( role.roles.role == "SuperUser" )
+
+                    {
+                        console.log(role);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                } );
+            }
             if ( response.status == 200 &&  response.data !="login failed" ) {
                 auth.user = response.data;
+                auth.user.isSuperUser = checkRole(auth.user.user_role);
                 $cookieStore.put('user', JSON.stringify(auth.user));
 
                 userManager.requestToken({

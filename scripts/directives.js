@@ -20,14 +20,32 @@ nalipaDirectives.directive('nalipaTopHeader', function(authService,$state,$windo
         templateUrl: 'views/directives/nalipa-top-header.html',
         link: function(scope, elem, attrs) {
             scope.hideLogin  = false;
+            scope.isSuperUSer  = false;
+
+            function checkRole(userRoles){
+                angular.forEach(userRoles, function(role){
+
+                    if ( role.roles.role == "SuperUser" )
+
+                    {
+                        scope.isSuperUSer  = true;
+                    }
+                        else
+                    {
+                        scope.isSuperUSer  = false;
+                    }
+
+                } );
+            }
+
             scope.$watch('user', function (value) {
+
                 if ( scope.user && scope.user != "" )
                 {
+                    checkRole(scope.user.user_role);
                     scope.hideLogin = true;
                 }
             });
-
-
 
             scope.logout = function(){
 
@@ -43,7 +61,6 @@ nalipaDirectives.directive('nalipaTopHeader', function(authService,$state,$windo
                     $state.go('home');
                 })
             }
-
 
         }
 

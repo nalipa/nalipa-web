@@ -145,7 +145,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
         controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
         templateUrl: 'views/settings.html'
@@ -155,7 +159,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
             templateUrl: 'views/settings.html'
@@ -165,7 +173,13 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
+
                 }]
             },
             templateUrl: 'views/settings.html'
@@ -175,7 +189,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
             templateUrl: 'views/settings.html'
@@ -185,7 +203,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
             templateUrl: 'views/settings.html'
@@ -195,7 +217,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
             templateUrl: 'views/settings.html'
@@ -204,7 +230,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
             templateUrl: 'views/settings.html'
@@ -214,7 +244,12 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    console.log(auth.user);
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
             templateUrl: 'views/settings.html'
@@ -224,7 +259,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
             templateUrl: 'views/settings.html'
@@ -234,7 +273,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
             templateUrl: 'views/settings.html'
@@ -244,7 +287,11 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    return authService.user || $q.reject({unAuthorized:true});
+                    if ( authService.user.isSuperUser ){
+                        return authService.user;
+                    }else{
+                        return $q.reject({unAuthorized:true});
+                    }
                 }]
             },
             templateUrl: 'views/settings.html'
