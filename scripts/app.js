@@ -145,7 +145,7 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
         controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    if ( authService.user.isSuperUser ){
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -159,7 +159,8 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    if ( authService.user.isSuperUser ){
+
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -174,7 +175,7 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             resolve:{
                 user:['authService','$q',function(authService,$q){
 
-                    if ( authService.user.isSuperUser ){
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -189,7 +190,7 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    if ( authService.user.isSuperUser ){
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -203,7 +204,7 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    if ( authService.user.isSuperUser ){
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -217,7 +218,7 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    if ( authService.user.isSuperUser ){
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -230,7 +231,7 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    if ( authService.user.isSuperUser ){
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -244,8 +245,8 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    console.log(auth.user);
-                    if ( authService.user.isSuperUser ){
+
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -259,7 +260,7 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    if ( authService.user.isSuperUser ){
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -273,7 +274,7 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    if ( authService.user.isSuperUser ){
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -287,7 +288,7 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
             controller:'SettingsController',
             resolve:{
                 user:['authService','$q',function(authService,$q){
-                    if ( authService.user.isSuperUser ){
+                    if ( eval('('+authService.user+')').isSuperUser ){
                         return authService.user;
                     }else{
                         return $q.reject({unAuthorized:true});
@@ -353,58 +354,6 @@ nalipa.config(function($stateProvider,$urlRouterProvider,$locationProvider,$rout
         templateUrl: 'views/signup.html'
     });
     $urlRouterProvider.otherwise('/');
-    //$locationProvider.html5Mode({
-    //    enabled: true,
-    //    requireBase: false
-    //});
-    //$routeProvider.when('/', {
-    //    templateUrl: 'views/home.html',
-    //    controller: 'HomeController'
-    //}).when('/how-it-works', {
-    //    templateUrl: 'views/how-it-works.html',
-    //    controller: 'WorkController'
-    //}).when('/cart', {
-    //    templateUrl: 'views/cart.html',
-    //    controller: 'CartController'
-    //}).when('/cart/:id/edit/:type', {
-    //    templateUrl: 'views/partials/editCart.html',
-    //    controller: 'CartController'
-    //}).when('/cart/:id/delete', {
-    //    templateUrl: 'views/deleteCart.html',
-    //    controller: 'CartController'
-    //}).when('/card-details', {
-    //    templateUrl: 'views/partials/cardDetails.html',
-    //    controller: 'CartController'
-    //}).when('/orders', {
-    //    templateUrl: 'views/order.html',
-    //    controller: 'OrderController'
-    //}).when('/orders/:id/payfor', {
-    //    templateUrl: 'views/payforOrder.html',
-    //    controller: 'OrderController'
-    //}).when('/orders/:id/details', {
-    //    templateUrl: 'views/orderDetails.html',
-    //    controller: 'OrderController'
-    //}).when('/orders/:id/delete', {
-    //    templateUrl: 'views/deleteOrder.html',
-    //    controller: 'OrderController'
-    //}).when('/faqs', {
-    //    templateUrl: 'views/faqs.html',
-    //    controller: 'FAQsController'
-    //}).when('/contacts', {
-    //    templateUrl: 'views/contacts.html',
-    //    controller: 'ContactsController'
-    //}).when('/settings', {
-    //    templateUrl: 'views/settings.html',
-    //    controller: 'SettingsController'
-    //}).when('/login', {
-    //    templateUrl: 'views/login.html',
-    //    controller: 'UserController'
-    //}).when('/signup', {
-    //    templateUrl: 'views/signup.html',
-    //    controller: 'UserController'
-    //}).otherwise({
-    //    redirectTo : '/'
-    //});
 
     stripeProvider.setPublishableKey('pk_test_Fs8KW1paR1d1Iox3hGltB7VF');
 
