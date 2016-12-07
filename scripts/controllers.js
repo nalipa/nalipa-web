@@ -560,7 +560,11 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 				"body": "Registered user can send one FREE SMS per transactions to the beneficially number in the local country"
 			}
 		];
+
 		$scope.panels.activePanel = 0;
+		$scope.openClickedPanel = function(index){
+			$scope.panels.activePanel = index;
+		}
 
 	}])
 	.controller('ContactsController',['$scope','userManager','vcRecaptchaService',function($scope,userManager,vcRecaptchaService)

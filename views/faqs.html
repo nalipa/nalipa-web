@@ -5,7 +5,7 @@
         <hr/>
         <div class="panel-group" ng-model="panels.activePanel" role="tablist" aria-multiselectable="true" bs-collapse>
             <div class="panel panel-default" ng-repeat="panel in panels">
-                <div class="panel-heading" role="tab">
+                <div class="panel-heading" ng-click="openClickedPanel($index)" role="tab" style="cursor:pointer;background-image: -webkit-linear-gradient(top,#ffffff 0,#ffffff 100%);">
                     <h4 class="panel-title">
                         <a bs-collapse-toggle>
                             {{ panel.title }}
