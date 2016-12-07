@@ -9,11 +9,20 @@ var nalipaServices = angular.module('nalipaServices', ['ngResource'])
     .value('BASE_AUTH_URL', location.origin+'/nalipa/public/index.php')
     .value('STRIPE_URL', location.origin+':8080/stripe/payment')
     .value('MAIL_URL', location.origin+':8080/mailUs');
-nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookieStore) {
+nalipaServices.factory('orderManager', function ($http, API_BASE_URL, $q,$cookieStore,userManager) {
     var orderManager = {
-        listOrders: function () {
+        listAllOrders: function () {
             var deferred = $q.defer();
             $http.get(API_BASE_URL + '/orders').then(function (result) {
+                deferred.resolve(result);
+            }, function (error) {
+                deferred.reject(error);
+            });
+            return deferred.promise;
+        },listOrders: function () {
+            var loggedUser = userManager.getAuthenticatedUser();
+            var deferred = $q.defer();
+            $http.get(API_BASE_URL + '/userOrders/'+loggedUser.id).then(function (result) {
                 deferred.resolve(result);
             }, function (error) {
                 deferred.reject(error);
