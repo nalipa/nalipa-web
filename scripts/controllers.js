@@ -1085,7 +1085,7 @@ var nalipaControllers = angular.module('nalipaControllers', [])
 
 
         user.registerUser = function(user){
-			user.register.alertBody = {};
+			user.alertBody = {};
             userManager.addUser(user).then(function(result){
 				if ( result.statusText=="OK" && result.data)
 				{
